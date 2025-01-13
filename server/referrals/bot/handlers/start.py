@@ -17,7 +17,7 @@ async def start(message:Message,command:CommandObject,session:AsyncSession) -> A
     user = await session.scalar(select(User).where(User.id == message.from_user.id))
     me = await message.bot.get_me()
     if not user:
-        user = User(id=Message.from_user.id)
+        user = User(id=message.from_user.id)
         session.add(user)
         await session.commit()
     
