@@ -1,16 +1,17 @@
 import asyncio 
 
-from aiogram import Bot, Dispatcher
+from aiogram.filters.command import Command
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message
 
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession,async_sessionmaker
 
-from bot.handlers import setup_routers
-from bot.middlewares import DBSessionMiddleware
+from referrals.bot.handlers import setup_routers
+from referrals.bot.middlewares import DBSessionMiddleware
 
-from db import Base
-from config_reader import config
+from referrals.db import Base
+from referrals.config_reader import config
 
 bot = Bot(config.BOT_TOKEN.get_secret_value())
 dp = Dispatcher()
@@ -33,7 +34,9 @@ async def on_startup() -> None:
 async def on_shutdown(dp:Dispatcher,session:AsyncSession) -> None:
     await session.close()
 
-
+@dp.message(Command("bebra"))
+async def cmd_start(message: types.Message):
+    await message.answer("Hello!")
 
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))

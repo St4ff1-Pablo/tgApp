@@ -13,7 +13,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start(message:Message,command:CommandObject,session:AsyncSession) -> Any:
-    from db import User,Referral
+    from referrals.db import User,Referral
     user = await session.scalar(select(User).where(User.id == message.from_user.id))
     me = await message.bot.get_me()
     if not user:
