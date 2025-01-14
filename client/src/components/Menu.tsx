@@ -9,7 +9,7 @@ function Menu () {
                         <a href="/" className="menu-link">Menu</a>
                     </li>
                     <li className="menu-item"><a href="/profile" className="menu-link">Profile</a></li>
-                    <li className="menu-item"><a href="/upgrade" className="menu-link">Upgrade</a></li>
+                    <li className="menu-item"><a href="/upgrade" className="menu-link">Mission</a></li>
                     <li className="menu-item"><a href="/arena" className="menu-link">Arena</a></li>
                     <li className="menu-item"><a href="/shop" className="menu-link">Shop</a></li>
                 </ul>

@@ -1,21 +1,33 @@
-
+@font-face {
+    font-family: "BlockKie";
+    src: url("../public/fonts/BlockKie.ttf") format("truetype");
+    font-style: normal; 
+    font-weight: normal; 
+    }
 .upgrade {
     text-align: center;
-    padding: 20px;
-}
+    padding-top: 300px;
+    font-family: 'BlockKie';
 
-.skills-list {
-    list-style: none;
-    padding: 0;
 }
 
 .skills-list li {
+    padding-bottom: auto;
     margin: 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 1.2rem;
+    font-family: 'BlockKie'
 }
+
+.skills-list {
+    list-style: none;
+    padding-top:300px;
+    padding-right: 25px;
+    font-family: 'BlockKie'
+}
+
 
 button {
     padding: 5px 10px;
@@ -24,8 +36,10 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-family: 'BlockKie'
 }
 
 button:hover {
     background-color: #ffaa00;
+    font-family: 'BlockKie'
 }
