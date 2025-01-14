@@ -3,14 +3,75 @@
     src: url("../public/fonts/BlockKie.ttf") format("truetype");
     font-style: normal; 
     font-weight: normal; 
+
     }
-.menu {
+    /* Основной стиль приложения */
+/* Основной стиль приложения */
+.app {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    font-family: "BlockKie";
+  }
+  
+  /* Контентная часть */
+  .content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    text-align: left;
+    font-family: "BlockKie";
+    padding-right: 18vh;
+  }
+  
+  /* Нижняя панель навигации */
+  .bottom-navigation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #282c34;
+    padding: 10px 0;
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: #e7a61a;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    font-family: "BlockKie";
+    padding-right: 50vh;
+  }
+  
+  /* Кнопки навигации */
+  .nav-button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "BlockKie";
+  }
+  
+  .nav-button:hover {
+    background: white;
+    color: #282c34;
+    font-family: "BlockKie";
+  }
+  
+  
+/*.menu {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background:#e7a61a;
     padding: 10px 0;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
 }
 
 .menu-container {
@@ -33,26 +94,31 @@
     display: flex;
     justify-content: space-around;
     list-style: none;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    border: 5px black;
+
 
 }
 
 .menu-item .menu-link {
+    display: inline-block;
+    flex-direction: row-reverse;
     color: #fff;
     text-decoration: none;
     font-size: 22px;
-    transition: color 0.3s;
-    word-spacing: 100%;
-    padding: 10px 10px 10px -3px;
+    transition: color 0.5s;
+    word-spacing: 11rem;
+    padding: 10rem 10rem 10rem -3rem;
     margin: 6px;
+    height: fit-content;
+    width: fit-content;
     font-family: 'BlockKie';
     outline-style: 2px;
-    border: black;
-    border-radius: 20px;
+    border:2px, black;
     border-style: solid;
-    
+    box-sizing:20px ;
 }
 
 .menu-item .menu-link:hover {
     color: #23ab19;
-}
+}*/

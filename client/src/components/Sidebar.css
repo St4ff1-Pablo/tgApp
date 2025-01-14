@@ -5,8 +5,10 @@
     font-weight: normal; 
     }
 .upgrade {
+    display: flexbox;
+    flex-direction: row;
     text-align: center;
-    padding-top: 300px;
+    padding-top: 600px;
     font-family: 'BlockKie';
 
 }
@@ -23,15 +25,15 @@
 
 .skills-list {
     list-style: none;
-    padding-top:300px;
+    padding-top:10px;
     padding-right: 25px;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
 }
 
 
 button {
     padding: 5px 10px;
-    background-color: #ffcc00;
+    background-color: #e7a61a;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -40,6 +42,6 @@ button {
 }
 
 button:hover {
-    background-color: #ffaa00;
+    background-color: #ffab04;
     font-family: 'BlockKie'
 }

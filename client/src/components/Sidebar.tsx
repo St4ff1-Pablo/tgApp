@@ -1,4 +1,4 @@
-// src/pages/Upgrade.jsx
+
 import React, { useState } from 'react';
 import './Sidebar.css';
 
@@ -29,24 +29,24 @@ const Upgrade = () => {
     };
 
     return (
-        <div>
-        <ul className="skills-list">
-        <div className="upgrade">
-        <h1>Upgrade stats</h1>
-        <p>Coins: 🪙 {coins}</p>
-        </div>
-        {Object.keys(skills).map((skill) => (
+        <div className="sidebar">
+            <div className="upgrade">
+                <h1>Upgrade Stats</h1>
+                <p>Coins: 🪙 {coins}</p>
+            </div>
+            <ul className="skills-list">
+                {Object.keys(skills).map((skill) => (
                     <li key={skill}>
-                        <span>{skill.charAt(0).toUpperCase() + skill.slice(1)}: {skills[skill as keyof Skills]}</span>
+                        <span>
+                            {skill.charAt(0).toUpperCase() + skill.slice(1)}: {skills[skill as keyof Skills]}
+                        </span>
                         <button onClick={() => upgradeSkill(skill as keyof Skills)}>Upgrade (-100 🪙)</button>
                     </li>
                 ))}
             </ul>
-            
-    </div>
-        
+        </div>
     );
-    
 };
 
 export default Upgrade;
+
