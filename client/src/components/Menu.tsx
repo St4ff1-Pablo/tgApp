@@ -1,5 +1,80 @@
+import React, { useState } from "react";
+import "./Menu.css";
 
-import './Menu.css';
+const App = () => {
+  // Управление текущей страницей
+  const [currentPage, setCurrentPage] = useState("menu");
+
+  // Рендер контента текущей страницы
+  const renderPage = () => {
+    switch (currentPage) {
+      case "menu":
+        return <div className="page">Это меню</div>;
+      case "profile":
+        return <div className="page">Это профиль</div>;
+      case "arena":
+        return <div className="page">Это арена</div>;
+      case "missions":
+        return <div className="page">Это миссии</div>;
+      case "shop":
+        return <div className="page">Это магазин</div>;
+      default:
+        return <div className="page">Страница не найдена</div>;
+    }
+  };
+
+  return (
+    <div className="app">
+      <div className="content">{renderPage()}</div>
+      <div className="bottom-navigation">
+        <button onClick={() => setCurrentPage("menu")} className="nav-button">
+          Меню
+        </button>
+        <button onClick={() => setCurrentPage("profile")} className="nav-button">
+          Профиль
+        </button>
+        <button onClick={() => setCurrentPage("arena")} className="nav-button">
+          Арена
+        </button>
+        <button onClick={() => setCurrentPage("missions")} className="nav-button">
+          Миссии
+        </button>
+        <button onClick={() => setCurrentPage("shop")} className="nav-button">
+          Магазин
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default App;
+
+/*import React from "react";
+import "./Menu.css";
+
+const Menu = () => {
+  const buttons = [
+    { id: 1, label: "Menu", design: "design1" },
+    { id: 2, label: "Profile", design: "design2" },
+    { id: 3, label: "Arena", design: "design3" },
+    { id: 4, label: "Mission", design: "design4" },
+    { id: 5, label: "Shop", design: "design5" },
+  ];
+
+  return (
+    <div className="button-container">
+      {buttons.map((button) => (
+        <button key={button.id} className={`button ${button.design}`}>
+          {button.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default Menu;
+
+/*import './Menu.css';
 function Menu () {
     return(
         <nav className="menu">
@@ -19,7 +94,7 @@ function Menu () {
 }; 
 export default Menu;
 
-/*function Menu() {
+function Menu() {
   return (
     <div>
         <h1>Menu</h1>
