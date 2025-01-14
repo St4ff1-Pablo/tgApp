@@ -5,12 +5,18 @@ import './Sidebar.css';
 const Upgrade = () => {
     const [coins, setCoins] = useState(1500);
     const [skills, setSkills] = useState({
-        strength: 0,
-        agility: 0,
-        intelligence: 0,
+        DMG: 0,
+        HP: 0,
+        DEF: 0,
     });
 
-    const upgradeSkill = (skill) => {
+    interface Skills {
+        DMG: number;
+        HP: number;
+        DEF: number;
+    }
+
+    const upgradeSkill = (skill: keyof Skills) => {
         if (coins >= 100) {
             setSkills({
                 ...skills,
@@ -23,19 +29,24 @@ const Upgrade = () => {
     };
 
     return (
+        <div>
+        <ul className="skills-list">
         <div className="upgrade">
-            <h1>Upgrade stats</h1>
-            <p>Coins: 🪙 {coins}</p>
-            <ul className="skills-list">
-                {Object.keys(skills).map((skill) => (
+        <h1>Upgrade stats</h1>
+        <p>Coins: 🪙 {coins}</p>
+        </div>
+        {Object.keys(skills).map((skill) => (
                     <li key={skill}>
-                        <span>{skill.charAt(0).toUpperCase() + skill.slice(1)}: {skills[skill]}</span>
-                        <button onClick={() => upgradeSkill(skill)}>Upgrade (-100 🪙)</button>
+                        <span>{skill.charAt(0).toUpperCase() + skill.slice(1)}: {skills[skill as keyof Skills]}</span>
+                        <button onClick={() => upgradeSkill(skill as keyof Skills)}>Upgrade (-100 🪙)</button>
                     </li>
                 ))}
             </ul>
-        </div>
+            
+    </div>
+        
     );
+    
 };
 
 export default Upgrade;

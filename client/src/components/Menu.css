@@ -1,15 +1,24 @@
+@font-face {
+    font-family: "BlockKie";
+    src: url("../public/fonts/BlockKie.ttf") format("truetype");
+    font-style: normal; 
+    font-weight: normal; 
+    }
 .menu {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: #e7a61a;
     padding: 10px 0;
+    font-family: 'BlockKie'
 }
 
 .menu-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-family: 'BlockKie'
+    
 }
 
 .menu-logo {
@@ -17,23 +26,33 @@
     font-weight: bold;
     color: #fff;
     text-decoration: none;
+    font-family: 'BlockKie'
 }
 
 .menu-menu {
     display: flex;
     justify-content: space-around;
     list-style: none;
-    margin: 0;
-    padding: 0;
+    font-family: 'BlockKie'
+
 }
 
 .menu-item .menu-link {
     color: #fff;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 22px;
     transition: color 0.3s;
+    word-spacing: 100%;
+    padding: 10px 10px 10px -3px;
+    margin: 6px;
+    font-family: 'BlockKie';
+    outline-style: 2px;
+    border: black;
+    border-radius: 20px;
+    border-style: solid;
+    
 }
 
 .menu-item .menu-link:hover {
-    color: #ffcc00;
+    color: #23ab19;
 }
