@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram.filters.command import Command
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession,async_sessionmaker
@@ -34,9 +34,14 @@ async def on_startup() -> None:
 async def on_shutdown(dp:Dispatcher,session:AsyncSession) -> None:
     await session.close()
 
-@dp.message(Command("bebra"))
-async def cmd_start(message: types.Message):
-    await message.answer("Hello!")
+#@dp.message(Command("bebra"))
+#async def send_welcome(message: types.Message):
+ #   web_app_url = "https://1d5d-158-195-193-196.ngrok-free.app"
+ #   button = InlineKeyboardButton(text="Open Web App", url=web_app_url)
+   # keyboard = InlineKeyboardMarkup(inline_keyboard=[[button]]) 
+   # await message.answer("Click the button to open the web app:", reply_markup=keyboard)
+
+
 
 if __name__ == '__main__':
     asyncio.run(dp.start_polling(bot))
