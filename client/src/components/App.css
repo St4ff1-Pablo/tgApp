@@ -1,13 +1,24 @@
+
 @font-face {
     font-family: "BlockKie";
     src: url("../public/fonts/BlockKie.ttf") format("truetype");
     font-style: normal; 
     font-weight: normal; 
     }
+.char {
+    width: 80vw;
+    height: 80vw;
+    background: url('../../public/characters/image0_0__1_-removebg-preview.png') no-repeat center center;
+    background-size: contain;
+    position: absolute; /* Позиционирование поверх фона */
+    bottom: 35%; /* Позиция от нижнего края */
+    left: 50%; /* Позиция от центра */
+    transform: translateX(-50%); /* Центровка персонажа */
+}    
 .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 205vw;
     background: url('../../public/characters/Untitled.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
@@ -32,9 +43,9 @@
 }
 
 .character {
-    height: 80px;
-    border-radius: 10px;
-    border: 2px solid #fff;
+    height: 80vw;
+    border-radius: 10vw;
+    border: 2vw solid #fff;
     font-family: 'BlockKie'
 }
 

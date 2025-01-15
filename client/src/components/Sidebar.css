@@ -8,34 +8,35 @@
     display: flexbox;
     flex-direction: row;
     text-align: center;
-    padding-top: 600px;
+    padding-top: 135vw;
     font-family: 'BlockKie';
 
 }
 
 .skills-list li {
     padding-bottom: auto;
-    margin: 10px 0;
+    margin: 1vw 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 1.2rem;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    font-weight: 3vw; ;
 }
 
 .skills-list {
     list-style: none;
-    padding-top:10px;
-    padding-right: 25px;
+    padding-top:1vw;
+    padding-right: 10vw;
     font-family: 'BlockKie';
 }
 
 
 button {
-    padding: 5px 10px;
+    padding: 4vw 5vw;
     background-color: #e7a61a;
     border: none;
-    border-radius: 5px;
+    border-radius: 1vw;
     cursor: pointer;
     transition: background-color 0.3s;
     font-family: 'BlockKie'

@@ -9,17 +9,17 @@ const App = () => {
   const renderPage = () => {
     switch (currentPage) {
       case "menu":
-        return <div className="page">Это меню</div>;
+        return <div className="page"></div>;
       case "profile":
-        return <div className="page">Это профиль</div>;
+        return <div className="page"></div>;
       case "arena":
-        return <div className="page">Это арена</div>;
+        return <div className="page"></div>;
       case "missions":
-        return <div className="page">Это миссии</div>;
+        return <div className="page"></div>;
       case "shop":
-        return <div className="page">Это магазин</div>;
+        return <div className="page"></div>;
       default:
-        return <div className="page">Страница не найдена</div>;
+        return <div className="page"></div>;
     }
   };
 
