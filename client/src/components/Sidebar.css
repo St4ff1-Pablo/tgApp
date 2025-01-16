@@ -44,6 +44,36 @@
       padding-top: 72vw;
     }
   }  
+  @media (max-height: 912px) {
+    .skills-list li {
+      padding-top: 115vw;
+    }
+  }
+@media (max-height: 697px) {
+    .skills-list li {
+      padding-top: 80vw;
+    }
+  }  
+  @media (max-height: 832px) {
+    .skills-list li {
+      padding-top: 97vw;
+    }
+  }
+@media (max-height: 540px) {
+    .skills-list li {
+      padding-top: 48vw;
+    }
+  }  
+  @media (max-height: 720px) {
+    .skills-list li {
+      padding-top: 80vw;
+    }
+  }
+@media (max-height: 697px) {
+    .skills-list li {
+      padding-top: 80vw;
+    }
+  }    
   
 .skills-list {
     list-style: none;
