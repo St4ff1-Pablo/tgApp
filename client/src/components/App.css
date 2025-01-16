@@ -1,14 +1,28 @@
+
 @font-face {
     font-family: "BlockKie";
     src: url("../public/fonts/BlockKie.ttf") format("truetype");
     font-style: normal; 
     font-weight: normal; 
     }
+.char {
+    max-height: 100%;
+    width: 85vw;
+    height: 85vw;
+    background: url('../../public/characters/image0_0__1_-removebg-preview.png') no-repeat center center;
+    background-size: contain;
+    position: absolute; /* Позиционирование поверх фона */
+    bottom: 30%; /* Позиция от нижнего края */
+    left: 52%; /* Позиция от центра */
+    transform: translateX(-50%); /* Центровка персонажа */
+}    
 .app {
+    max-height: 100%;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    background: url('../../public/characters/Untitled.jpg') no-repeat center center fixed;
+    height: 110%;
+    width: 100%;
+    background: url('../../public/characters/back_1.png') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     font-family: 'BlockKie'
@@ -32,9 +46,9 @@
 }
 
 .character {
-    height: 80px;
-    border-radius: 10px;
-    border: 2px solid #fff;
+    height: 80vw;
+    border-radius: 10vw;
+    border: 2vw solid #fff;
     font-family: 'BlockKie'
 }
 

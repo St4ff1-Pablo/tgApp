@@ -1,3 +1,4 @@
+
 @font-face {
     font-family: "BlockKie";
     src: url("../public/fonts/BlockKie.ttf") format("truetype");
@@ -10,7 +11,7 @@
 .app {
     display: flex;
     flex-direction: row;
-    height: 100vh;
+    height: 1vw;
     font-family: "BlockKie";
   }
   
@@ -20,10 +21,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 24vw;
     text-align: left;
     font-family: "BlockKie";
-    padding-right: 18vh;
+    padding-right: 50vw;
   }
   
   /* Нижняя панель навигации */
@@ -32,26 +33,26 @@
     justify-content: space-around;
     align-items: center;
     background-color: #282c34;
-    padding: 10px 0;
+    padding: 2vw 0;
     position: fixed;
     bottom: 0;
     width: 100%;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -2vw 10vw rgba(0, 0, 0, 0.2);
     font-family: "BlockKie";
-    padding-right: 50vh;
+    padding-right: 50vw;
   }
   
   /* Кнопки навигации */
   .nav-button {
     flex: 1;
-    margin: 0 5px;
-    padding: 10px;
-    font-size: 16px;
+    margin: 0 0.2vw;
+    padding: 3vw;
+    font-size: 3vw;
     font-weight: bold;
     color: white;
     background: transparent;
-    border: 2px solid white;
-    border-radius: 8px;
+    border: 0.2vw solid white;
+    border-radius: 1vw;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: "BlockKie";
