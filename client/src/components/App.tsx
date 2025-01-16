@@ -6,9 +6,9 @@ import './App.css'
 function App() {
   return (
     <div>
-      <div className='char'></div>
       <div className='app'>
-        <Sidebar/>
+      <Sidebar/>
+      <div className='char'></div>
         <div className='content'>
           <div className='top-bar'>
           </div>

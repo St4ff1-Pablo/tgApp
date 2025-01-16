@@ -4,42 +4,68 @@
     font-style: normal; 
     font-weight: normal; 
     }
-.upgrade {
+.sidebar {
+    max-width: 100%;
+    max-height: 25%;
     display: flexbox;
-    flex-direction: row;
+    justify-content: flex-end;
+}    
+.upgrade {
+    max-height: 100%;
+    display: flexbox;
+    flex-direction: column;
     text-align: center;
-    padding-top: 135vw;
+    padding-top: 10vw;
     font-family: 'BlockKie';
 
 }
 
 .skills-list li {
+    max-height: 100%;
     padding-bottom: auto;
-    margin: 1vw 0;
+    margin: 3vw 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 7vw;
     font-family: 'BlockKie';
-    font-weight: 3vw; ;
-}
+    font-weight: 1vw; ;
+    flex-direction: column;
+    padding-top: 80vw;
 
+}
+@media (max-height: 932px) {
+    .skills-list li {
+      padding-top: 123vw;
+    }
+  }
+@media (max-height: 667px) {
+    .skills-list li {
+      padding-top: 72vw;
+    }
+  }  
+  
 .skills-list {
     list-style: none;
     padding-top:1vw;
     padding-right: 10vw;
     font-family: 'BlockKie';
+    flex-direction: column;
 }
 
 
 button {
-    padding: 4vw 5vw;
+    padding: 5% 20%;
+    margin: 12%;
     background-color: #e7a61a;
     border: none;
     border-radius: 1vw;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    flex-direction: column;
+    align-items: center;
+    top: 10vw;
 }
 
 button:hover {

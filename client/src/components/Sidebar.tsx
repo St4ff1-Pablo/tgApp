@@ -5,15 +5,11 @@ import './Sidebar.css';
 const Upgrade = () => {
     const [coins, setCoins] = useState(1500);
     const [skills, setSkills] = useState({
-        DMG: 0,
-        HP: 0,
-        DEF: 0,
+        LEVEL: 0,
     });
 
     interface Skills {
-        DMG: number;
-        HP: number;
-        DEF: number;
+        LEVEL: number;
     }
 
     const upgradeSkill = (skill: keyof Skills) => {
@@ -30,11 +26,12 @@ const Upgrade = () => {
 
     return (
         <div className="sidebar">
+            
+            <ul className="skills-list">
             <div className="upgrade">
-                <h1>Upgrade Stats</h1>
+                <h1>Upgrade</h1>
                 <p>Coins: 🪙 {coins}</p>
             </div>
-            <ul className="skills-list">
                 {Object.keys(skills).map((skill) => (
                     <li key={skill}>
                         <span>

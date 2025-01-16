@@ -6,20 +6,23 @@
     font-weight: normal; 
     }
 .char {
-    width: 80vw;
-    height: 80vw;
+    max-height: 100%;
+    width: 85vw;
+    height: 85vw;
     background: url('../../public/characters/image0_0__1_-removebg-preview.png') no-repeat center center;
     background-size: contain;
     position: absolute; /* Позиционирование поверх фона */
-    bottom: 35%; /* Позиция от нижнего края */
-    left: 50%; /* Позиция от центра */
+    bottom: 30%; /* Позиция от нижнего края */
+    left: 52%; /* Позиция от центра */
     transform: translateX(-50%); /* Центровка персонажа */
 }    
 .app {
+    max-height: 100%;
     display: flex;
     flex-direction: column;
-    height: 205vw;
-    background: url('../../public/characters/Untitled.jpg') no-repeat center center fixed;
+    height: 110%;
+    width: 100%;
+    background: url('../../public/characters/back_1.png') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     font-family: 'BlockKie'
