@@ -56,17 +56,17 @@
   }  
   @media (max-height: 832px) {
     .skills-list li {
-      padding-top: 97vw;
+      padding-top: 104vw;
     }
   }
 @media (max-height: 540px) {
     .skills-list li {
-      padding-top: 48vw;
+      padding-top: 55vw;
     }
   }  
   @media (max-height: 720px) {
     .skills-list li {
-      padding-top: 80vw;
+      padding-top: 85vw;
     }
   }
 @media (max-height: 697px) {
