@@ -1,7 +1,56 @@
-import React, { useState } from "react";
+
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Menu.css";
 
-const App = () => {
+const Menu = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
+
+  return (
+    <div className="menu-container">
+      <div className="bottom-navigation">
+        <button
+          onClick={() => navigate("/")}
+          className={`nav-button ${isActive("/") ? "active" : ""}`}
+        >
+          Menu
+        </button>
+        <button
+          onClick={() => navigate("/profile")}
+          className={`nav-button ${isActive("/profile") ? "active" : ""}`}
+        >
+          Profile
+        </button>
+        <button
+          onClick={() => navigate("/arena")}
+          className={`nav-button ${isActive("/arena") ? "active" : ""}`}
+        >
+          Arena
+        </button>
+        <button
+          onClick={() => navigate("/missions")}
+          className={`nav-button ${isActive("/missions") ? "active" : ""}`}
+        >
+          Mission
+        </button>
+        <button
+          onClick={() => navigate("/shop")}
+          className={`nav-button ${isActive("/shop") ? "active" : ""}`}
+        >
+          Shop
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Menu;
+
+
+/*const App = () => {
   // Управление текущей страницей
   const [currentPage, setCurrentPage] = useState("menu");
 

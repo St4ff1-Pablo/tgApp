@@ -14,12 +14,11 @@ function App() {
         <div className="content">
           <div className="top-bar"></div>
           <Routes>
-            {/* Определяем маршруты */}
             <Route path="/" element={<Menu />} />
-            <Route path="/profile" element={<div>Это профиль</div>} />
-            <Route path="/arena" element={<div>Это арена</div>} />
-            <Route path="/missions" element={<div>Это миссии</div>} />
-            <Route path="/shop" element={<div>Это магазин</div>} />
+            <Route path="/profile" element={<div></div>} />
+            <Route path="/arena" element={<div></div>} />
+            <Route path="/missions" element={<div></div>} />
+            <Route path="/shop" element={<div></div>} />
           </Routes>
         </div>
       </div>
