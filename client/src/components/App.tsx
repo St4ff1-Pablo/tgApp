@@ -1,9 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import Menu from "./Menu";
+import Profile from "./Profile";
 import './Menu.css';
 
-const Menu = () => <div></div>;
-const Profile = () => <div></div>;
+const Chlen = () => <div><Menu/></div>;
+const Pisya = () => <div><Profile/></div>;
 const Arena = () => <div></div>;
 const Missions = () => <div></div>;
 const Shop = () => <div></div>;
@@ -26,8 +28,6 @@ const App = () => {
   return (
     <Router>
       <div className="app-container">
-        <Navigation />
-
         <div className="content">
           <Routes>
             <Route path="/" element={<Menu />} />
@@ -37,12 +37,14 @@ const App = () => {
             <Route path="/shop" element={<Shop />} />
           </Routes>
         </div>
+        <Navigation />
       </div>
     </Router>
   );
 };
 
 export default App;
+
 
 // import React from 'react'
 // import Menu

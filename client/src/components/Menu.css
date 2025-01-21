@@ -7,29 +7,54 @@
 
     }
     /* Основной стиль приложения */
-.nav-bar {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.nav-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.nav-button:hover {
-  background-color: #e0e0e0;
-}
-
-.nav-button:active {
-  background-color: #007bff;
-  color: white;
-}
+    .app-container {
+        position: flex;
+        min-height: 10vh;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
+      
+      .content {
+        flex: 1;
+        padding: 0vh;
+        background: url('Untitled.jpg') no-repeat center center fixed;
+        background-size: cover;
+      }
+      
+      .nav-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #e7a61a;
+      }
+      
+      .nav-button {
+        flex: 1;
+        margin: 0 0.2vw;
+        padding: 3vw;
+        font-size: 3vw;
+        font-weight: bold;
+        color: white;
+        background: transparent;
+        border: 0.2vw solid white;
+        border-radius: 1vw;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "BlockKie";
+        
+      }
+      
+      .nav-button:hover {
+        background-color: #e7a61a;
+      }
+      
+      .nav-button:active {
+        background-color: #ffab04;
+      }
+      
 
 
 
