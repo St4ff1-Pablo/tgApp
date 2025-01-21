@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Menu from "./Menu";
 import Profile from "./Profile";
+import Sidebar from "./Sidebar";
 import './Menu.css';
 
 const Chlen = () => <div><Menu/></div>;
@@ -9,6 +10,7 @@ const Pisya = () => <div><Profile/></div>;
 const Arena = () => <div></div>;
 const Missions = () => <div></div>;
 const Shop = () => <div></div>;
+const Sideb = () => <div><Sidebar/></div>
 
 const Navigation = () => {
   const navigate = useNavigate();

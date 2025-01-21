@@ -34,13 +34,13 @@
       .nav-button {
         flex: 1;
         margin: 0 0.2vw;
-        padding: 3vw;
+        padding: 5vw;
         font-size: 3vw;
         font-weight: bold;
-        color: white;
+        color: black;
         background: transparent;
-        border: 0.2vw solid white;
-        border-radius: 1vw;
+        border: 0.2vw solid black;
+        border-radius: 0vw;
         cursor: pointer;
         transition: all 0.3s ease;
         font-family: "BlockKie";

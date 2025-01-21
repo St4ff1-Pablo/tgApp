@@ -8,10 +8,7 @@ function Menu() {
       <div className='char'></div>
       <div className='app'>
         <Sidebar/>
-        <div className='content'>
-          <div className='top-bar'>
-          </div>
-        </div>
+        
       </div>
     </div>
   )
