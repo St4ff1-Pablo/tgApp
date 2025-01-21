@@ -61,7 +61,7 @@
   }
 @media (max-height: 540px) {
     .skills-list li {
-      padding-top: 37vw;
+      padding-top: 32vw;
     }
   }  
   @media (max-height: 720px) {
