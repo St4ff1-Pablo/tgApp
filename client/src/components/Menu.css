@@ -7,8 +7,35 @@
 
     }
     /* Основной стиль приложения */
-/* Основной стиль приложения */
-.app {
+.nav-bar {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #e0e0e0;
+}
+
+.nav-button:active {
+  background-color: #007bff;
+  color: white;
+}
+
+
+
+    /* Основной стиль приложения */
+/* .app {
+
     display: flex;
     flex-direction: row;
     height: 1vw;
@@ -16,7 +43,7 @@
   }
   
   /* Контентная часть */
-  .content {
+  /* .content {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -28,7 +55,7 @@
   }
   
   /* Нижняя панель навигации */
-  .bottom-navigation {
+  /* .bottom-navigation {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -40,10 +67,10 @@
     box-shadow: 0 -2vw 10vw rgba(0, 0, 0, 0.2);
     font-family: "BlockKie";
     padding-right: 50vw;
-  }
+  } */
   
   /* Кнопки навигации */
-  .nav-button {
+  /* .nav-button {
     flex: 1;
     margin: 0 0.2vw;
     padding: 3vw;
@@ -56,13 +83,13 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: "BlockKie";
-  }
+  } */
   
-  .nav-button:hover {
+  /* .nav-button:hover {
     background: white;
     color: #282c34;
     font-family: "BlockKie";
-  }
+  } */ 
   
   
 /*.menu {
