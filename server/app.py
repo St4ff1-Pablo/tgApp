@@ -1,10 +1,3 @@
-import sys
-import os
-
-# Add the root directory of the project to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
 from main import _sessionmaker as async_session
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,7 +21,12 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True  # Enable conversion from ORM attributes
 
+class ReferralResponse(BaseModel):
+    id: int
+    referral_id: int
 
+    class Config:
+        from_attributes = True
 
 async def get_session() -> AsyncSession:
     async with async_session() as session:
@@ -47,4 +45,14 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
 
     # Use model_validate instead of from_orm
     return UserResponse.model_validate(user)
+
+@app.get("/users/{user_id}/referrals", response_model=List[ReferralResponse])
+async def get_referrals(user_id: int, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Referral).where(Referral.user_id == user_id))
+    referrals = result.scalars().all()
+
+    if not referrals:
+        raise HTTPException(status_code=404, detail="No referrals found")
+
+    return [ReferralResponse.model_validate(ref) for ref in referrals]
 
