@@ -17,7 +17,7 @@ bot = Bot(config.BOT_TOKEN.get_secret_value())
 dp = Dispatcher()
 
 
-_engine = create_async_engine(config.DB_URL.get_secret_value())
+_engine = create_async_engine(config.DB_URL.get_secret_value(),echo=True)
 _sessionmaker = async_sessionmaker(_engine,expire_on_commit=False)
 
 
