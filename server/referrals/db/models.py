@@ -9,7 +9,7 @@ class User(Base):
     coins=mapped_column(BigInteger,default=0)
     gems=mapped_column(BigInteger,default=0)
     level=mapped_column(Integer,default=1)
-    name=mapped_column(String)
+    name=mapped_column(String,unique=True)
 
 
 class Referral(Base): 
