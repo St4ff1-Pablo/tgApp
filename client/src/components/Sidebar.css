@@ -36,14 +36,44 @@
 }
 @media (max-height: 932px) {
     .skills-list li {
-      padding-top: 123vw;
+      padding-top: 108vw;
     }
   }
 @media (max-height: 667px) {
     .skills-list li {
-      padding-top: 72vw;
+      padding-top: 62vw;
     }
   }  
+  @media (max-height: 912px) {
+    .skills-list li {
+      padding-top: 101vw;
+    }
+  }
+@media (max-height: 697px) {
+    .skills-list li {
+      padding-top: 63vw;
+    }
+  }  
+  @media (max-height: 832px) {
+    .skills-list li {
+      padding-top: 85vw;
+    }
+  }
+@media (max-height: 540px) {
+    .skills-list li {
+      padding-top: 32vw;
+    }
+  }  
+  @media (max-height: 720px) {
+    .skills-list li {
+      padding-top: 59vw;
+    }
+  }
+@media (max-height: 697px) {
+    .skills-list li {
+      padding-top: 70vw;
+    }
+  }    
   
 .skills-list {
     list-style: none;
