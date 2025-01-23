@@ -1,22 +1,23 @@
-import asyncio 
-
-from aiogram import Bot, Dispatcher
-from aiogram.types import Message
+import asyncio,logging,sys
+ 
+from aiogram.filters.command import Command
+from aiogram import Bot, Dispatcher, types
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession,async_sessionmaker
 
-from bot.handlers import setup_routers
-from bot.middlewares import DBSessionMiddleware
+from referrals.bot.handlers import setup_routers
+from referrals.bot.middlewares import DBSessionMiddleware
 
-from db import Base
-from config_reader import config
+from referrals.db import Base
+from referrals.config_reader import config
 
 bot = Bot(config.BOT_TOKEN.get_secret_value())
 dp = Dispatcher()
 
 
-_engine = create_async_engine(config.DB_URL.get_secret_value())
+_engine = create_async_engine(config.DB_URL.get_secret_value(),echo=True)
 _sessionmaker = async_sessionmaker(_engine,expire_on_commit=False)
 
 
@@ -32,8 +33,13 @@ async def on_startup() -> None:
 @dp.shutdown()
 async def on_shutdown(dp:Dispatcher,session:AsyncSession) -> None:
     await session.close()
+dp.shutdown.register(on_shutdown)
 
 
 
 if __name__ == '__main__':
-    asyncio.run(dp.start_polling(bot))
+    logging.basicConfig(level=logging.INFO,stream=sys.stdout)
+    try:
+        asyncio.run(dp.start_polling(bot))
+    except KeyboardInterrupt:
+        print("Shutting down")
