@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import './Sidebar.css';
+import myImage from '../../public/characters/mini_coin_1.png';
 
 const Upgrade = () => {
     const [coins, setCoins] = useState(1500);
@@ -30,14 +31,14 @@ const Upgrade = () => {
             <ul className="skills-list">
             <div className="upgrade">
                 <h1>Upgrade</h1>
-                <p>Coins: 🪙 {coins}</p>
+                <p>Coins: <img src={myImage} alt="dft" height="19vw" width="19vw"/> {coins}</p>
             </div>
                 {Object.keys(skills).map((skill) => (
                     <li key={skill}>
                         <span>
                             {skill.charAt(0).toUpperCase() + skill.slice(1)}: {skills[skill as keyof Skills]}
                         </span>
-                        <button onClick={() => upgradeSkill(skill as keyof Skills)}>Upgrade (-100 🪙)</button>
+                        <button onClick={() => upgradeSkill(skill as keyof Skills)}>Upgrade (-100 <img src={myImage} alt="dft" height="12vw" width="14vw"/>)</button>
                     </li>
                 ))}
             </ul>
