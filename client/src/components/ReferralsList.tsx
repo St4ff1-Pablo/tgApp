@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+axios.defaults.headers.common["ngrok-skip-browser-warning"] = "true";
+
 const ReferralsList: React.FC = () => {
     interface Referral {
         id: number;
-        referral_id: string;
+        referral_id: number;  // Оставляем referral_id как число
     }
 
     const [referrals, setReferrals] = useState<Referral[]>([]);
@@ -46,7 +48,7 @@ const ReferralsList: React.FC = () => {
                 <ul>
                     {referrals.map((ref) => (
                         <li key={ref.id}>
-                            Referral ID: <strong>{ref.referral_id}</strong>
+                            Referral ID: <strong>{ref.referral_id.toString()}</strong> {/* Преобразуем в строку */}
                         </li>
                     ))}
                 </ul>
@@ -58,4 +60,3 @@ const ReferralsList: React.FC = () => {
 };
 
 export default ReferralsList;
-
