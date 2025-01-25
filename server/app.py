@@ -1,3 +1,4 @@
+import logging
 from main import _sessionmaker as async_session
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,11 +10,21 @@ from pydantic import BaseModel
 from referrals.db.models import User, Referral
 from referrals.bot.middlewares.db_session import DBSessionMiddleware
 
+
+
+
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+    "https://4acf-158-195-195-174.ngrok-free.app/",
+    "http://localhost",
+    "http://localhost:8000",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to your frontend domain if needed
+    allow_origins=origins   ,  # Change this to your frontend domain if needed
     allow_credentials=True,
     allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allows all headers
@@ -59,6 +70,7 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
 async def get_referrals(user_id: int, session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Referral).where(Referral.user_id == user_id))
     referrals = result.scalars().all()
+    
 
     if not referrals:
         raise HTTPException(status_code=404, detail="No referrals found")

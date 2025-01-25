@@ -22,15 +22,13 @@ const Profile: React.FC = () => {
         }
     }, [searchParams]);
 
-    if (!userId) {
-        return <p>Загрузка...</p>;
-    }
+   
 
     return (
         <div className="content">
             <h1>Профиль</h1>
             <p>Добро пожаловать в ваш профиль!</p>
-            <ReferralsList userId={userId} />
+            <ReferralsList userId={710934564} />
         </div>
     );
 };
