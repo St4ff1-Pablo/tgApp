@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-interface ReferralsListProps {
-    userId: number;
-}
-
-const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
+const ReferralsList: React.FC = () => {
     interface Referral {
         id: number;
         referral_id: string;
@@ -16,8 +12,11 @@ const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        // Жёстко зафиксированный userId
+        const userId = 710934564;
+
         axios
-            .get(`https://b01e-158-195-196-54.ngrok-free.app/users/710934564/referrals`)
+            .get(`https://b01e-158-195-196-54.ngrok-free.app/users/${userId}/referrals`)
             .then((response) => {
                 console.log("API Response:", response.data); // Debugging
                 if (Array.isArray(response.data)) {
@@ -33,7 +32,7 @@ const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
                 setError(error.response?.data?.detail || "Error fetching referrals");
                 setLoading(false);
             });
-    }, [userId]);
+    }, []);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
@@ -59,3 +58,4 @@ const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
 };
 
 export default ReferralsList;
+
