@@ -3,12 +3,21 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from referrals.db.models import User, Referral
 from referrals.bot.middlewares.db_session import DBSessionMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to your frontend domain if needed
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 class UserResponse(BaseModel):
     id: int

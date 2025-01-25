@@ -2,7 +2,7 @@ from typing import Any
 
 from aiogram.enums import ParseMode
 from aiogram import Router,F
-from aiogram.types import Message
+from aiogram.types import Message , WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import CommandStart, CommandObject
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -17,6 +17,16 @@ router = Router()
 @router.message(CommandStart())
 async def start(message: Message, command: CommandObject, session: AsyncSession) -> Any:
     user = await session.scalar(select(User).where(User.id == message.from_user.id))
+
+    web_app_url = "https://e173-158-195-196-54.ngrok-free.app"
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="Menu",
+                web_app=WebAppInfo(url=f"{web_app_url}?user_id={message.from_user.id}")
+            )
+        ]
+    ])
 
     builder = InlineKeyboardBuilder()
     builder.add(types.InlineKeyboardButton(
