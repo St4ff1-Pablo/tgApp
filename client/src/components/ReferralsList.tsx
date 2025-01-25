@@ -10,18 +10,26 @@ const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
         id: number;
         referral_id: string;
     }
-    
+
     const [referrals, setReferrals] = useState<Referral[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        axios.get(`http://158.195.196.54:8000/users/${userId}/referrals`)
-            .then(response => {
-                setReferrals(response.data);
+        axios
+            .get(`https://b01e-158-195-196-54.ngrok-free.app/users/710934564/referrals`)
+            .then((response) => {
+                console.log("API Response:", response.data); // Debugging
+                if (Array.isArray(response.data)) {
+                    setReferrals(response.data);
+                } else {
+                    console.error("Unexpected API response:", response.data);
+                    setError("Invalid data format from API.");
+                }
                 setLoading(false);
             })
-            .catch(error => {
+            .catch((error) => {
+                console.error("API Error:", error);
                 setError(error.response?.data?.detail || "Error fetching referrals");
                 setLoading(false);
             });
@@ -33,9 +41,9 @@ const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
     return (
         <div>
             <h2>My Referrals</h2>
-            {referrals.length === 0 ? (
+            {Array.isArray(referrals) && referrals.length === 0 ? (
                 <p>No referrals found.</p>
-            ) : (
+            ) : Array.isArray(referrals) ? (
                 <ul>
                     {referrals.map((ref) => (
                         <li key={ref.id}>
@@ -43,6 +51,8 @@ const ReferralsList: React.FC<ReferralsListProps> = ({ userId }) => {
                         </li>
                     ))}
                 </ul>
+            ) : (
+                <p>Unexpected data format received.</p>
             )}
         </div>
     );
