@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import './Sidebar.css';
+import './styles/Sidebar.css';
 
 const Upgrade = () => {
     const [coins, setCoins] = useState(1500);

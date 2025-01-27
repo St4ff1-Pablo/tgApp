@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import Menu from "./Menu";
 import Profile from "./Profile";
 import Sidebar from "./Sidebar";
-import './Menu.css';
+import './styles/Menu.css';
 
 const Chlen = () => <div><Menu/></div>;
 const Pisya = () => <div><Profile/></div>;

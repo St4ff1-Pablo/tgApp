@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-axios.defaults.headers.common["ngrok-skip-browser-warning"] = "true";
+import { useUserContext } from "./UserContext"; // Импортируем контекст
 
 const ReferralsList: React.FC = () => {
     interface Referral {
         id: number;
-        referral_id: number;  // Оставляем referral_id как число
+        referral_id: number;
     }
 
+    const { userId } = useUserContext(); // Получаем userId из контекста
     const [referrals, setReferrals] = useState<Referral[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Жёстко зафиксированный userId
-        const userId = 710934564;
-
+        if (!userId) return;
+    
         axios
-            .get(`https://1ee8-158-195-196-54.ngrok-free.app/users/${userId}/referrals`)
+            .get(`https://56e4-158-195-196-54.ngrok-free.app/users/${userId}/referrals`,{headers:{
+                "ngrok-skip-browser-warning":true,
+            }})
             .then((response) => {
-                console.log("API Response:", response.data); // Debugging
+                console.log("API Response:", response.data); // Логируем ответ от сервера
                 if (Array.isArray(response.data)) {
-                    setReferrals(response.data);
+                    setReferrals(response.data); // Устанавливаем полученные данные в состояние
                 } else {
                     console.error("Unexpected API response:", response.data);
                     setError("Invalid data format from API.");
@@ -34,8 +35,9 @@ const ReferralsList: React.FC = () => {
                 setError(error.response?.data?.detail || "Error fetching referrals");
                 setLoading(false);
             });
-    }, []);
+    }, [userId]);
 
+    if (!userId) return <p>Initializing...</p>;
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
@@ -48,7 +50,7 @@ const ReferralsList: React.FC = () => {
                 <ul>
                     {referrals.map((ref) => (
                         <li key={ref.id}>
-                            Referral ID: <strong>{ref.referral_id.toString()}</strong> {/* Преобразуем в строку */}
+                            Referral ID: <strong>{ref.referral_id}</strong>
                         </li>
                     ))}
                 </ul>
