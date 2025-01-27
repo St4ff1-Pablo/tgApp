@@ -21,11 +21,13 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://4acf-158-195-195-174.ngrok-free.app"],  # Allowed origins
+    allow_origins=["*"],  # Allowed origins
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],  # Allow OPTIONS method
+    allow_methods=["GET", "POST", "OPTIONS","PATCH"],  # Allow OPTIONS method
     allow_headers=["*"],  # Allow all headers
 )
+
+
 
 class UserResponse(BaseModel):
     id: int
@@ -44,6 +46,12 @@ class ReferralResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserUpdate(BaseModel):
+    coins: int | None = None
+    gems: int | None = None
+    level: int | None = None
 
 async def get_session() -> AsyncSession:
     async with async_session() as session:
@@ -70,4 +78,22 @@ async def get_referrals(user_id: int, session: AsyncSession = Depends(get_sessio
     # Вместо 404 возвращаем пустой список, если рефералов нет
     return [ReferralResponse.model_validate(ref) for ref in referrals] if referrals else []
 
+
+@app.patch("/users/{user_id}")
+async def update_user(
+    user_id: int, 
+    update_data: UserUpdate,
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(select(User).filter(User.id == user_id))
+    user = result.scalars().first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    for field, value in update_data.dict(exclude_unset=True).items():
+        setattr(user, field, value)
+    
+    await session.commit()
+    return UserResponse.model_validate(user)
 
