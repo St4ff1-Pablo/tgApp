@@ -18,7 +18,7 @@ const ReferralsList: React.FC = () => {
         const userId = 710934564;
 
         axios
-            .get(`https://b01e-158-195-196-54.ngrok-free.app/users/${userId}/referrals`)
+            .get(`https://1ee8-158-195-196-54.ngrok-free.app/users/${userId}/referrals`)
             .then((response) => {
                 console.log("API Response:", response.data); // Debugging
                 if (Array.isArray(response.data)) {
