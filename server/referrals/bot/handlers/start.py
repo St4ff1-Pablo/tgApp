@@ -1,18 +1,19 @@
 from typing import Any
 
 from aiogram.enums import ParseMode
-from aiogram import Router,F
-from aiogram.types import Message , WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram import Router, F
+from aiogram.types import Message, WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton, MenuButtonWebApp
 from aiogram.filters import CommandStart, CommandObject
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select,or_
+from sqlalchemy import select
 
-from referrals.db import User,Referral
+from referrals.db import User, Referral
 
 router = Router()
+
 
 @router.message(CommandStart())
 async def start(message: Message, command: CommandObject, session: AsyncSession) -> Any:
@@ -41,6 +42,15 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
         text="Get Your Referral Link",
         callback_data="ref_link"
     ))
+
+    # Set the bot menu button for the user
+    await message.bot.set_chat_menu_button(
+        chat_id=message.chat.id,
+        menu_button=MenuButtonWebApp(
+            text="Bot Menu",
+            web_app=WebAppInfo(url="https://4acf-158-195-195-174.ngrok-free.app")
+        )
+    )
 
     if not user:
         user = User(id=message.from_user.id)
@@ -86,6 +96,7 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
             
     return await message.answer("Thank you for using our bot.\nUseful links:", reply_markup=builder.as_markup())
 
+
 @router.callback_query(F.data == "ref_link")
 async def send_refLink(callback: types.CallbackQuery):
     me = await callback.bot.get_me()
@@ -94,4 +105,5 @@ async def send_refLink(callback: types.CallbackQuery):
         f"Here is your referral link:\n<code>{referral_link}</code>",
         parse_mode=ParseMode.HTML
     )
+
 
