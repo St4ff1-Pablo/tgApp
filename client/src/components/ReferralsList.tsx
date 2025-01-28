@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserContext } from "./UserContext"; // Импортируем контекст
+import './styles/Profile.css';
+import './styles/Menu.css';
 
 const ReferralsList: React.FC = () => {
     interface Referral {
@@ -42,20 +44,20 @@ const ReferralsList: React.FC = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div>
-            <h2>My Referrals</h2>
+        <div className="appi">
+            <h2 className="content">My Referrals</h2>
             {Array.isArray(referrals) && referrals.length === 0 ? (
-                <p>No referrals found.</p>
+                <p className="noref">No referrals found.</p>
             ) : Array.isArray(referrals) ? (
                 <ul>
                     {referrals.map((ref) => (
-                        <li key={ref.id}>
+                        <li key={ref.id} className="ref">
                             Referral ID: <strong>{ref.referral_id}</strong>
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p>Unexpected data format received.</p>
+                <p className="noref">Unexpected data format received.</p>
             )}
         </div>
     );

@@ -4,7 +4,7 @@ import './styles/App.css'
 
 function Menu() {
   return (
-    <div>
+    <div className='body'>
       <div className='char'></div>
       <div className='app'>
         <Sidebar/>

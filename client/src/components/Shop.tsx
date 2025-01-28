@@ -1,8 +1,17 @@
 // Shop.tsx
-import React from "react";
+import React from 'react'
+import './styles/App.css'
 
-const Shop = () => {
-  return <div>Страница магазина</div>;
-};
-
-export default Shop;
+function Menu() {
+  return (
+    <div>
+      <div className='app'>
+        <div className='cs'>Coming soon...</div>
+      </div>
+        
+      </div>
+    
+  )
+}
+  
+export default Menu; 

@@ -16,6 +16,9 @@
     left: 52%; /* Позиция от центра */
     transform: translateX(-50%); /* Центровка персонажа */
 }    
+.body {
+    overflow: hidden;
+}
 .app {
     max-height: 100%;
     display: flex;
@@ -25,7 +28,8 @@
     background: url('../../public/characters/back_1.png') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    overflow: hidden;
 
 }
 
@@ -34,7 +38,8 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    overflow: hidden;
 }
 
 .top-bar {
@@ -42,13 +47,24 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    overflow: hidden;
 }
 
 .character {
     height: 80vw;
     border-radius: 10vw;
     border: 2vw solid #fff;
-    font-family: 'BlockKie'
+    font-family: 'BlockKie';
+    overflow: hidden;
 }
 
+.cs {
+    display: flex;
+    justify-content: center;
+    font-size: 10vw;
+    font-family: 'BlockKie';
+    padding-top: 44vh;
+    margin-bottom: 55vh;
+    overflow: hidden;
+}

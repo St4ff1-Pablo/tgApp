@@ -29,6 +29,7 @@
         left: 0;
         width: 100%;
         background-color: #e7a61a;
+        overflow: hidden;
       }
       
       .nav-button {
@@ -53,6 +54,10 @@
       
       .nav-button:active {
         background-color: #ffab04;
+      }
+
+      body {
+        overflow: hidden;
       }
       
 
