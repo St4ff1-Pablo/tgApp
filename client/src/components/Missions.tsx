@@ -19,7 +19,7 @@ const Missions = () => {
     if (!mission || mission.completed) return; // Проверяем, существует ли миссия и не завершена ли она
 
     try {
-      // Обновляем данные пользователя на сервере
+      // Обновляем данные пользователя на серве
       const { coins: rewardCoins, gems: rewardGems } = mission.reward;
       await axios.patch(
         `https://56e4-158-195-196-54.ngrok-free.app/users/${userId}`,
