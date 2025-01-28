@@ -4,10 +4,11 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List
+from sqlalchemy.sql import func
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from referrals.db.models import User, Referral
+from referrals.db.models import User, Referral, Mission, UserMission
 from referrals.bot.middlewares.db_session import DBSessionMiddleware
 
 
@@ -92,4 +93,45 @@ async def update_user(
     
     await session.commit()
     return UserResponse.model_validate(user)
+
+
+
+@app.get("/users/{user_id}/missions")
+async def get_user_missions(user_id: int, session: AsyncSession = Depends(get_session)):
+    """ Retrieves missions for a specific user. """
+    result = await session.execute(
+        select(
+            Mission.id, Mission.name, Mission.description, Mission.reward_coins, UserMission.completed, Mission.reward_gems
+        ).join(UserMission, Mission.id == UserMission.mission_id)
+        .where(UserMission.user_id == user_id)
+    )
+    
+    missions = result.all()
+    return [{"id": m[0], "name": m[1], "description": m[2], "reward": m[3], "completed": m[4]} for m in missions]
+
+
+@app.post("/users/{user_id}/missions/{mission_id}/complete")
+async def complete_mission(user_id: int, mission_id: int, session: AsyncSession = Depends(get_session)):
+    """ Mark mission as completed and give rewards to user. """
+    # Check if user exists
+    user = await session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Check if mission exists
+    mission = await session.get(Mission, mission_id)
+    if not mission:
+        raise HTTPException(status_code=404, detail="Mission not found")
+
+    # Update user's coins and gems
+    user.coins += mission.reward_coins
+    user.gems += mission.reward_gems
+
+    # Mark mission as completed (assuming you have a UserMission table)
+    completed_mission = UserMission(user_id=user.id, mission_id=mission.id)
+    session.add(completed_mission)
+
+    await session.commit()
+    return {"message": "Mission completed!", "coins_earned": mission.reward_coins, "gems_earned": mission.reward_gems}
+
 

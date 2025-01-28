@@ -11,8 +11,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from referrals.db import User, Referral
+from referrals.db.models import User, Mission, UserMission
 
 router = Router()
+
+
+
+async def initialize_user_missions(session: AsyncSession, user_id: int):
+    """ Assign all missions to a new user when they register. """
+    missions = await session.execute(select(Mission.id))
+    mission_ids = missions.scalars().all()
+
+    for mission_id in mission_ids:
+        session.add(UserMission(user_id=user_id, mission_id=mission_id, completed=False))
+
+    await session.commit()
 
 
 @router.message(CommandStart())
@@ -51,6 +64,8 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
         )
         session.add(user)
         await session.commit()
+        # Assign missions to new user
+        await initialize_user_missions(session, user.id)
     else:
         # Update the name if it has changed
         new_name = message.from_user.username if message.from_user.username else f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip()
@@ -107,5 +122,6 @@ async def send_refLink(callback: types.CallbackQuery):
         f"Here is your referral link:\n<code>{referral_link}</code>",
         parse_mode=ParseMode.HTML
     )
+
 
 
