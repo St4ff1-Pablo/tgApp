@@ -15,10 +15,6 @@ from referrals.bot.middlewares.db_session import DBSessionMiddleware
 
 app = FastAPI()
 
-origins = [
-    "https://4acf-158-195-195-174.ngrok-free.app/"
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allowed origins

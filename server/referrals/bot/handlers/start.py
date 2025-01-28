@@ -19,15 +19,7 @@ router = Router()
 async def start(message: Message, command: CommandObject, session: AsyncSession) -> Any:
     user = await session.scalar(select(User).where(User.id == message.from_user.id))
 
-    web_app_url = "https://e173-158-195-196-54.ngrok-free.app"
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="Menu",
-                web_app=WebAppInfo(url=f"{web_app_url}?user_id={message.from_user.id}")
-            )
-        ]
-    ])
+    
 
     builder = InlineKeyboardBuilder()
     builder.add(types.InlineKeyboardButton(
@@ -48,14 +40,24 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
         chat_id=message.chat.id,
         menu_button=MenuButtonWebApp(
             text="Bot Menu",
-            web_app=WebAppInfo(url="https://4acf-158-195-195-174.ngrok-free.app")
+            web_app=WebAppInfo(url="https://2c11-158-195-195-174.ngrok-free.app")
         )
     )
 
     if not user:
-        user = User(id=message.from_user.id)
+        user = User(
+        id=message.from_user.id,
+        name=message.from_user.username if message.from_user.username else f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip()
+        )
         session.add(user)
         await session.commit()
+    else:
+        # Update the name if it has changed
+        new_name = message.from_user.username if message.from_user.username else f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip()
+        if user.name != new_name:
+            user.name = new_name
+            await session.commit()
+
 
     if command.args:
         option, value = command.args.split('_')
