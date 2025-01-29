@@ -4,11 +4,11 @@ import { useUserContext } from "./UserContext";
 interface MissionProps {
     id: number;
     name: string;
-    coins_reward: number;
-    gems_reward: number;
+    reward_coins: number;
+    reward_gems: number;
 }
 
-const MissionCard: React.FC<MissionProps> = ({ id, name, coins_reward, gems_reward }) => {
+const MissionCard: React.FC<MissionProps> = ({ id, name, reward_coins, reward_gems }) => {
     const { completeMission } = useUserContext(); // Use the completeMission function from context
 
     const handleComplete = () => {
@@ -18,8 +18,8 @@ const MissionCard: React.FC<MissionProps> = ({ id, name, coins_reward, gems_rewa
     return (
         <div className="mission-card">
             <h3>{name}</h3>
-            <p>Coins Reward: {coins_reward}</p>
-            <p>Gems Reward: {gems_reward}</p>
+            <p>Coins Reward: {reward_coins}</p>
+            <p>Gems Reward: {reward_gems}</p>
             <button onClick={handleComplete}>Complete Mission</button>
         </div>
     );
