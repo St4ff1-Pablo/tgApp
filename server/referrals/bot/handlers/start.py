@@ -18,17 +18,21 @@ router = Router()
 
 
 async def initialize_user_missions(session: AsyncSession, user_id: int):
-    missions = await session.execute(select(Mission.id))
-    mission_ids = missions.scalars().all()
-
-    user_mission_objects = [
-        UserMission(user_id=user_id, mission_id=mission_id, completed=False)
-        for mission_id in mission_ids
+    # Получаем все миссии, включая новые
+    missions = await session.execute(select(Mission))
+    existing = await session.execute(
+        select(UserMission.mission_id).where(UserMission.user_id == user_id)
+    )
+    existing_ids = existing.scalars().all()
+    
+    new_missions = [
+        UserMission(user_id=user_id, mission_id=mission.id)
+        for mission in missions.scalars().all() 
+        if mission.id not in existing_ids
     ]
-
-    session.add_all(user_mission_objects)
+    
+    session.add_all(new_missions)
     await session.commit()
-    print(f"Assigned {len(user_mission_objects)} missions to user {user_id}")  # Debugging
 
 
 @router.message(CommandStart())
@@ -63,15 +67,17 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
     if not user:
         user = User(
         id=message.from_user.id,
-        name=message.from_user.username if message.from_user.username else f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip(),
-        coins=0,  # Ensure default value
-        gems=0   # Ensure default value
-    )
+        name = (
+        message.from_user.username 
+        or f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip()
+        or f"User_{message.from_user.id}"  # Запасной вариант
+                ),
+        coins=0,
+        gems=0
+        )
+        session.add(user)  # Сначала добавляем в сессию
+        await session.commit()  # Затем коммитим
 
-        await session.flush()
-        session.add(user)
-        await session.commit()
-        # Assign missions to new user
         await initialize_user_missions(session, user.id)
     else:
         # Update the name if it has changed
@@ -124,6 +130,9 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
 @router.callback_query(F.data == "ref_link")
 async def send_refLink(callback: types.CallbackQuery):
     me = await callback.bot.get_me()
+    if not me.username:
+        return await callback.answer("Bot username not configured!", show_alert=True)
+    
     referral_link = f'https://t.me/{me.username}?start=r_{callback.from_user.id}'
     await callback.message.answer(
         f"Here is your referral link:\n<code>{referral_link}</code>",

@@ -9,17 +9,18 @@ class User(Base):
     coins=mapped_column(BigInteger,default=0)
     gems=mapped_column(BigInteger,default=0)
     level=mapped_column(Integer,default=1)
-    name=mapped_column(String,unique=True)
+    name = mapped_column(String, nullable=False, default=lambda ctx: f"User_{ctx.get_current_parameters()['id']}")
     missions = relationship('UserMission', back_populates='user', lazy='joined')
 
 
 class Referral(Base): 
     __tablename__='referrals'
     id=mapped_column(BigInteger,primary_key=True)
-    user_id=mapped_column(BigInteger,ForeignKey('users.id'))
-    referral_id=mapped_column(BigInteger)
+    user_id=mapped_column(BigInteger, ForeignKey('users.id'))
+    referral_id=mapped_column(BigInteger, ForeignKey('users.id'))  # Добавляем ForeignKey
 
-    user = relationship('User',back_populates='referrals',foreign_keys=[user_id])
+    user = relationship('User', back_populates='referrals', foreign_keys=[user_id])
+    referral_user = relationship('User', foreign_keys=[referral_id])
 
 
 class UserMission(Base):
