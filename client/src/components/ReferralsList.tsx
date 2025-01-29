@@ -45,20 +45,21 @@ const ReferralsList: React.FC = () => {
 
     return (
         <div className="appi">
-            <h2 className="content">My Referrals</h2>
-            {Array.isArray(referrals) && referrals.length === 0 ? (
+            <div className="rf1">
+                <h2 className="content1">My Referrals</h2>
+                {Array.isArray(referrals) && referrals.length === 0 ? (
                 <p className="noref">No referrals found.</p>
-            ) : Array.isArray(referrals) ? (
+                ) : Array.isArray(referrals) ? (
                 <ul>
                     {referrals.map((ref) => (
-                        <li key={ref.id} className="ref">
+                        <div  key={ref.id} className="ref">
                             Referral ID: <strong>{ref.referral_id}</strong>
-                        </li>
+                        </div>
                     ))}
                 </ul>
-            ) : (
+                ) : (
                 <p className="noref">Unexpected data format received.</p>
-            )}
+            )}</div>
         </div>
     );
 };

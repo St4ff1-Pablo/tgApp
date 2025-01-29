@@ -10,12 +10,12 @@ const Profile: React.FC = () => {
         <UserProvider>
             <div className="boby">
                 <div className="appi">
-                    <div className="content">
+                    <div className="content" >
                         <h1 className="center1">Profile</h1>
-                        <p className="center2">Roma lox</p>
-                         {/* Подключаем компонент ReferralsList */}
-                        <ReferralsList />
-                        <div className="back">privodite refov eblany</div>
+                        <div className="rf" style={{overflowY: "scroll"}}>
+                            <ReferralsList />
+                        </div>
+                        <div className="back">RR</div>
                     </div>
                 </div>
             </div>

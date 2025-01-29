@@ -16,9 +16,7 @@
     left: 52%; /* Позиция от центра */
     transform: translateX(-50%); /* Центровка персонажа */
 }    
-.body {
-    overflow: hidden;
-}
+
 .app {
     max-height: 100%;
     display: flex;

@@ -20,7 +20,7 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="nav-bar">
+    <div className="nav-bar" style={{overflowY: "hidden"}}>
       <button onClick={() => navigate("/")} className="nav-button">Menu</button>
       <button onClick={() => navigate("/profile")} className="nav-button">Profile</button>
       <button onClick={() => navigate("/arena")} className="nav-button">Arena</button>
@@ -34,8 +34,8 @@ const App = () => {
   return (
    <UserProvider>
       <Router>
-      <div className="app-container">
-        <div className="content">
+      <div className="app-container" style={{overflowY: "hidden"}}>
+        <div className="content" style={{overflowY: "hidden"}}>
           <Routes>
             <Route path="/" element={<Menu />} />
             <Route path="/profile" element={<Profile />} />
