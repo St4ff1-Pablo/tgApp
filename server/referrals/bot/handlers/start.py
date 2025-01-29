@@ -18,14 +18,17 @@ router = Router()
 
 
 async def initialize_user_missions(session: AsyncSession, user_id: int):
-    """ Assign all missions to a new user when they register. """
     missions = await session.execute(select(Mission.id))
     mission_ids = missions.scalars().all()
 
-    for mission_id in mission_ids:
-        session.add(UserMission(user_id=user_id, mission_id=mission_id, completed=False))
+    user_mission_objects = [
+        UserMission(user_id=user_id, mission_id=mission_id, completed=False)
+        for mission_id in mission_ids
+    ]
 
+    session.add_all(user_mission_objects)
     await session.commit()
+    print(f"Assigned {len(user_mission_objects)} missions to user {user_id}")  # Debugging
 
 
 @router.message(CommandStart())
@@ -60,8 +63,12 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
     if not user:
         user = User(
         id=message.from_user.id,
-        name=message.from_user.username if message.from_user.username else f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip()
-        )
+        name=message.from_user.username if message.from_user.username else f"{message.from_user.first_name} {message.from_user.last_name or ''}".strip(),
+        coins=0,  # Ensure default value
+        gems=0   # Ensure default value
+    )
+
+        await session.flush()
         session.add(user)
         await session.commit()
         # Assign missions to new user

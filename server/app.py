@@ -71,9 +71,9 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
 async def get_referrals(user_id: int, session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Referral).where(Referral.user_id == user_id))
     referrals = result.scalars().all()
-    
-    # Вместо 404 возвращаем пустой список, если рефералов нет
-    return [ReferralResponse.model_validate(ref) for ref in referrals] if referrals else []
+
+    return [ReferralResponse.model_validate(ref) for ref in referrals] if referrals else []  # Return empty list instead of 404
+
 
 
 @app.patch("/users/{user_id}")
@@ -88,11 +88,13 @@ async def update_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # Safely update only provided fields
     for field, value in update_data.dict(exclude_unset=True).items():
-        setattr(user, field, value)
+        setattr(user, field, value if value is not None else getattr(user, field))  # Avoid overwriting with None
     
     await session.commit()
     return UserResponse.model_validate(user)
+
 
 
 
@@ -102,15 +104,21 @@ async def get_user_missions(user_id: int, session: AsyncSession = Depends(get_se
     result = await session.execute(
         select(
             Mission.id, Mission.name, Mission.description, Mission.reward_coins, Mission.reward_gems, UserMission.completed
-        ).join(UserMission, Mission.id == UserMission.mission_id)
+        )
+        .join(UserMission, Mission.id == UserMission.mission_id)
         .where(UserMission.user_id == user_id)
     )
-    
+
     missions = result.all()
+
+    if not missions:
+        return {"message": "No missions found for this user."}  # Return friendly message
+
     return [
-        {"id": m[0], "name": m[1], "description": m[2], "reward_coins": m[3], "reward_gems": m[4], "completed": m[5]} 
+        {"id": m.id, "name": m.name, "description": m.description, "reward_coins": m.reward_coins, "reward_gems": m.reward_gems, "completed": m.completed}
         for m in missions
     ]
+
 
 
 @app.post("/users/{user_id}/missions/{mission_id}/complete")
@@ -124,22 +132,26 @@ async def complete_mission(user_id: int, mission_id: int, session: AsyncSession 
     if not mission:
         raise HTTPException(status_code=404, detail="Mission not found")
 
-    existing_completion = await session.execute(
-        select(UserMission).where(
-            UserMission.user_id == user_id,
-            UserMission.mission_id == mission_id,
-            UserMission.completed == True
-        )
+    # Check if the mission is already completed
+    existing_mission = await session.execute(
+        select(UserMission)
+        .where(UserMission.user_id == user_id, UserMission.mission_id == mission_id)
     )
-    if existing_completion.scalars().first():
-        raise HTTPException(status_code=400, detail="Mission already completed")
-    
+    user_mission = existing_mission.scalars().first()
+
+    if user_mission:
+        if user_mission.completed:
+            raise HTTPException(status_code=400, detail="Mission already completed")
+        user_mission.completed = True
+        user_mission.completed_at = datetime.utcnow()
+    else:
+        session.add(UserMission(user_id=user.id, mission_id=mission.id, completed=True, completed_at=datetime.utcnow()))
+
+    # Update user's rewards
     user.coins += mission.reward_coins
     user.gems += mission.reward_gems
-    
-    completed_mission = UserMission(user_id=user.id, mission_id=mission.id, completed=True, completed_at=datetime.utcnow())
-    session.add(completed_mission)
+
     await session.commit()
-    
+
     return {"message": "Mission completed!", "coins_earned": mission.reward_coins, "gems_earned": mission.reward_gems}
 

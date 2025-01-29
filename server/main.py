@@ -33,7 +33,7 @@ async def initialize_missions():
     """ Add predefined missions to the database if they don't exist. """
     async with _sessionmaker() as session:
         existing_missions = await session.execute(select(Mission.id))
-        if not existing_missions.scalars().all():
+        if len(existing_missions.scalars().all()) == 0:
             # Insert sample missions
             missions = [
                 Mission(name="Complete First Task", description="Finish your first task", reward_coins=50,reward_gems=10),
