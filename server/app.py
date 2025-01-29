@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from referrals.db.models import User, Referral, Mission, UserMission
 from referrals.bot.middlewares.db_session import DBSessionMiddleware
 
-
+from datetime import datetime
 
 
 app = FastAPI()
@@ -101,37 +101,45 @@ async def get_user_missions(user_id: int, session: AsyncSession = Depends(get_se
     """ Retrieves missions for a specific user. """
     result = await session.execute(
         select(
-            Mission.id, Mission.name, Mission.description, Mission.reward_coins, UserMission.completed, Mission.reward_gems
+            Mission.id, Mission.name, Mission.description, Mission.reward_coins, Mission.reward_gems, UserMission.completed
         ).join(UserMission, Mission.id == UserMission.mission_id)
         .where(UserMission.user_id == user_id)
     )
     
     missions = result.all()
-    return [{"id": m[0], "name": m[1], "description": m[2], "reward": m[3], "completed": m[4]} for m in missions]
+    return [
+        {"id": m[0], "name": m[1], "description": m[2], "reward_coins": m[3], "reward_gems": m[4], "completed": m[5]} 
+        for m in missions
+    ]
 
 
 @app.post("/users/{user_id}/missions/{mission_id}/complete")
 async def complete_mission(user_id: int, mission_id: int, session: AsyncSession = Depends(get_session)):
     """ Mark mission as completed and give rewards to user. """
-    # Check if user exists
     user = await session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Check if mission exists
     mission = await session.get(Mission, mission_id)
     if not mission:
         raise HTTPException(status_code=404, detail="Mission not found")
 
-    # Update user's coins and gems
+    existing_completion = await session.execute(
+        select(UserMission).where(
+            UserMission.user_id == user_id,
+            UserMission.mission_id == mission_id,
+            UserMission.completed == True
+        )
+    )
+    if existing_completion.scalars().first():
+        raise HTTPException(status_code=400, detail="Mission already completed")
+    
     user.coins += mission.reward_coins
     user.gems += mission.reward_gems
-
-    # Mark mission as completed (assuming you have a UserMission table)
-    completed_mission = UserMission(user_id=user.id, mission_id=mission.id)
+    
+    completed_mission = UserMission(user_id=user.id, mission_id=mission.id, completed=True, completed_at=datetime.utcnow())
     session.add(completed_mission)
-
     await session.commit()
+    
     return {"message": "Mission completed!", "coins_earned": mission.reward_coins, "gems_earned": mission.reward_gems}
-
 
