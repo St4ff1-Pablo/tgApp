@@ -1,8 +1,17 @@
-// Arena.tsx
-import React from "react";
+import React from 'react'
+import './styles/App.css'
 
-const Arena = () => {
-  return <div>Страница арены</div>;
-};
+function Menu() {
+  return (
+    <div>
+      <div className='app'>
+        <div className='cs'>Coming soon...</div>
+      </div>
+        
+      </div>
+    
+  )
+}
+  
+export default Menu; 
 
-export default Arena;

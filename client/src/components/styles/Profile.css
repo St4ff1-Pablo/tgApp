@@ -32,10 +32,19 @@
 }
 
 .ref {
+    display: flex;
+    justify-self: flex-start;
+    justify-content: center;
+    justify-items: center;
     background-color: rgba(231, 166, 26, 0.7);
-    width: 75vw;
+    width: 72vw;
+    height: 5vh;
     font-size: 5vw;
     margin: 9vw 0 0 0vw;
+    right: 8vw;
     border: 1vw solid black;
     border-radius: 1vw;
+    overflow: scroll;
+    max-height: calc(100vh - 100px);
+
 }

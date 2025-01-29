@@ -3,15 +3,16 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import Menu from "./Menu";
 import Profile from "./Profile";
 import Sidebar from "./Sidebar";
-import Missions from "./Missions"
-import Shop from "./Shop"
+import Missions from "./Missions";
+import Shop from "./Shop";
+import Arena from "./Arena";
 import './styles/Menu.css';
 import { UserProvider } from './UserContext';
 
 
 const Chlen = () => <div><Menu/></div>;
 const Pisya = () => <div><Profile/></div>;
-const Arena = () => <div></div>;
+const Aren = () => <div><Arena/></div>;
 const VAGINA = () => <div><Missions/></div>;
 const Sho = () => <div><Shop/></div>;
 const Sideb = () => <div><Sidebar/></div>
