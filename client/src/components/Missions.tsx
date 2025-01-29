@@ -6,8 +6,8 @@ import { useUserContext } from "./UserContext";
 interface Mission {
     id: number;
     name: string;
-    coins_reward: number;
-    gems_reward: number;
+    reward_coins: number;  
+    reward_gems: number;
 }
 
 const Missions: React.FC = () => {
@@ -51,8 +51,8 @@ const Missions: React.FC = () => {
                             key={mission.id}
                             id={mission.id}
                             name={mission.name}
-                            coins_reward={mission.coins_reward}
-                            gems_reward={mission.gems_reward}
+                            reward_coins={mission.reward_coins}
+                            reward_gems={mission.reward_gems}
                         />
                     ))
                 ) : (

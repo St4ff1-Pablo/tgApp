@@ -105,30 +105,25 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Initialize Telegram WebApp and fetch user data on first load
     useEffect(() => {
-        const initTelegramWebApp = () => {
-            const tg = (window as any).Telegram.WebApp;
+    const initTelegramWebApp = async () => {
+        const tg = (window as any).Telegram?.WebApp;
+        
+        if (!tg?.initData || !userId) {
+            // Варианты действий:
+            // 1. Показать гостевой режим
+            // 2. Перенаправить на страницу авторизации
+            // 3. Запросить вход через Telegram
+            console.warn('User not authenticated');
+            tg?.showAlert('Please login via Telegram');
+            return;
+        }
+        
+        // Если пользователь есть, продолжаем загрузку данных
+        await fetchUserData(userId);
+    };
 
-            if (tg?.initData) {
-                try {
-                    const initData = new URLSearchParams(tg.initData);
-                    const userData = initData.get("user");
-
-                    if (userData) {
-                        const parsedUser = JSON.parse(userData);
-                        console.log("Telegram User Data:", parsedUser);
-                        if (parsedUser?.id) {
-                            setUserId(parsedUser.id);
-                            fetchUserData(parsedUser.id);
-                        }
-                    }
-                } catch (e) {
-                    console.error("Error parsing Telegram data:", e);
-                }
-            }
-        };
-
-        initTelegramWebApp();
-    }, []);
+    initTelegramWebApp();
+}, [userId]);
 
     // Provide the context values to child components
     return (
