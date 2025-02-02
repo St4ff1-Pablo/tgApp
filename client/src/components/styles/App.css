@@ -68,32 +68,3 @@
 
 
 
-.missions-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.missions-list {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 80vh; /* Adjust this value based on layout */
-    padding: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: #e7a61a transparent; /* Custom scrollbar colors */
-}
-
-/* Scrollbar for Webkit browsers */
-.missions-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.missions-list::-webkit-scrollbar-thumb {
-    background-color: #e7a61a;
-    border-radius: 4px;
-}
-
-.missions-list::-webkit-scrollbar-track {
-    background: transparent;
-}

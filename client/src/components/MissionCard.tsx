@@ -1,5 +1,6 @@
 import React from "react";
 import { useUserContext } from "./UserContext";
+import "./styles/Mission.css"
 
 interface MissionProps {
     id: number;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MissionCard from "./MissionCard";
 import { useUserContext } from "./UserContext";
+import "./styles/Mission.css"
 
 interface Mission {
     id: number;
