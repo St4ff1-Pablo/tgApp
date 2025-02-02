@@ -34,7 +34,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchUserData = async (id: number) => {
         try {
             const response = await axios.get<UserData>(
-                `https://56e4-158-195-196-54.ngrok-free.app/users/${id}`,
+                `https://68c5-158-195-196-54.ngrok-free.app/users/${id}`,
                 {
                     headers: {
                         "ngrok-skip-browser-warning": "true",
@@ -81,7 +81,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // Send POST request to complete the mission
             const response = await axios.post<MissionCompleteResponse>(
-                `https://56e4-158-195-196-54.ngrok-free.app/users/${userId}/missions/${missionId}/complete`,
+                `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/missions/${missionId}/complete`,
                 {},
                 {
                     headers: {

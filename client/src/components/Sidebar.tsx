@@ -14,7 +14,7 @@ const Upgrade = () => {
 
         try {
             await axios.patch(
-                `https://56e4-158-195-196-54.ngrok-free.app/users/${userId}`,
+                `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}`,
                 {
                     coins: coins - 100,
                     level: (level || 0) + 1
