@@ -4,16 +4,18 @@ import axios from "axios";
 // Define the structure of user data from the API
 interface UserData {
     coins: number;
-    gems: number; // Added gems
+    gems: number;
     level: number;
+    completed_missions: number[]; // Store completed mission IDs
 }
 
 // Define the structure of the context data
 interface UserContextType {
     userId: number | null;
     coins: number;
-    gems: number; // Added gems to context
+    gems: number;
     level: number | null;
+    completedMissions: number[]; // Store completed missions
     refreshUserData: () => void;
     completeMission: (missionId: number) => Promise<void>;
     loading: boolean;
@@ -25,9 +27,10 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 // Define the context provider
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [userId, setUserId] = useState<number | null>(null);
-    const [coins, setCoins] = useState<number | null>(null);
-    const [gems, setGems] = useState<number | null>(null);
-    const [level, setLevel] = useState<number | null>(null);
+    const [coins, setCoins] = useState<number>(0);
+    const [gems, setGems] = useState<number>(0);
+    const [level, setLevel] = useState<number>(1);
+    const [completedMissions, setCompletedMissions] = useState<number[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Fetch user data from the backend
@@ -43,13 +46,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             );
 
-            // Log response for debugging
             console.log("API Response:", response.data);
 
             // Update state with user data
             setCoins(response.data.coins);
-            setGems(response.data.gems); // Update gems
+            setGems(response.data.gems);
             setLevel(response.data.level);
+            setCompletedMissions(response.data.completed_missions || []); // Save completed missions
         } catch (error) {
             console.error("Error fetching user data:", error);
         } finally {
@@ -67,19 +70,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Complete a mission and update user rewards
     const completeMission = async (missionId: number) => {
-        if (!userId) return;
+        if (!userId || completedMissions.includes(missionId)) return;
 
         setLoading(true);
 
         try {
-            // Define response type for better type safety
             interface MissionCompleteResponse {
                 message: string;
-                coins_earned: number;
-                gems_earned: number;
+                reward_coins: number;
+                reward_gems: number;
             }
 
-            // Send POST request to complete the mission
             const response = await axios.post<MissionCompleteResponse>(
                 `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/missions/${missionId}/complete`,
                 {},
@@ -93,9 +94,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             console.log("Mission completed:", response.data);
 
-            // Update user's coins and gems based on the response
-            setCoins((prevCoins) => (prevCoins ?? 0) + response.data.coins_earned);
-            setGems((prevGems) => (prevGems ?? 0) + response.data.gems_earned);
+            // Update user's coins and gems
+            setCoins((prevCoins) => prevCoins + response.data.reward_coins);
+            setGems((prevGems) => prevGems + response.data.reward_gems);
+
+            // Mark the mission as completed
+            setCompletedMissions((prev) => [...prev, missionId]);
         } catch (error) {
             console.error("Error completing mission:", error);
         } finally {
@@ -125,17 +129,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         };
 
-    initTelegramWebApp();
-}, [userId]);
+        initTelegramWebApp();
+    }, [userId]);
 
     // Provide the context values to child components
     return (
         <UserContext.Provider
             value={{
                 userId,
-                coins: coins ?? 0, // Fallback to 0 if null
-                gems: gems ?? 0, // Fallback to 0 if null
-                level: level ?? 1, // Fallback to 1 if null
+                coins,
+                gems,
+                level,
+                completedMissions,
                 refreshUserData,
                 completeMission,
                 loading,
