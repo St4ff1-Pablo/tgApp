@@ -1,4 +1,5 @@
 from sqlalchemy import Integer,BigInteger,ForeignKey, String,Boolean,DateTime,func
+from datetime import datetime
 from sqlalchemy.orm import mapped_column , relationship
 from .base import Base
 
@@ -11,6 +12,9 @@ class User(Base):
     level=mapped_column(Integer,default=1)
     name = mapped_column(String, nullable=False, default=lambda ctx: f"User_{ctx.get_current_parameters()['id']}")
     missions = relationship('UserMission', back_populates='user', lazy='joined')
+
+    battle_attempts = mapped_column(Integer, default=5)  # максимум 5 попыток
+    last_battle_update = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class Referral(Base): 

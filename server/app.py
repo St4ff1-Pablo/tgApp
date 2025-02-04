@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from referrals.db.models import User, Referral, Mission, UserMission
 from referrals.bot.middlewares.db_session import DBSessionMiddleware
 
-from datetime import datetime
+from datetime import datetime,timedelta
 
 
 app = FastAPI()
@@ -64,16 +64,25 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_session)):
 
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    # Вычисляем количество восстановленных попыток
+    time_passed = (datetime.utcnow() - user.last_battle_update).total_seconds()
+    recovered_attempts = int(time_passed // 1800)  # 1800 секунд = 30 минут
+    if recovered_attempts > 0:
+        user.battle_attempts = min(user.battle_attempts + recovered_attempts, 5)
+        # Обновляем last_battle_update: прибавляем восстановленные 30-минутные интервалы
+        user.last_battle_update += timedelta(seconds=1800 * recovered_attempts)
+        await session.commit()
 
     # Use model_validate instead of from_orm
     return UserResponse.model_validate(user)
+
 @app.get("/users/{user_id}/referrals", response_model=List[ReferralResponse])
 async def get_referrals(user_id: int, session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Referral).where(Referral.user_id == user_id))
     referrals = result.scalars().all()
 
     return [ReferralResponse.model_validate(ref) for ref in referrals] if referrals else []  # Return empty list instead of 404
-
 
 
 @app.patch("/users/{user_id}")
@@ -87,6 +96,14 @@ async def update_user(
     
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    # Допустим, здесь update_data содержит поле "battle_attempts_delta" (например, -1 при окончании боя)
+    data = update_data.dict(exclude_unset=True)
+    if "battle_attempts_delta" in data:
+        user.battle_attempts = max(user.battle_attempts + data["battle_attempts_delta"], 0)
+        # Можно также обновить last_battle_update, если это требуется логикой
+        if data["battle_attempts_delta"] < 0:
+            user.last_battle_update = datetime.utcnow()
     
     # Safely update only provided fields
     for field, value in update_data.dict(exclude_unset=True).items():
