@@ -149,7 +149,7 @@ const Arena: React.FC = () => {
       const newCoins = coins + goldCollected;
       // Предполагается, что battle_attempts хранится в базе данных, и мы списываем одну попытку
       const newBattleAttempts = battle_attempts - 1;
-      await axios.patch(`https://your-backend-url.com/users/${userId}`, {
+      await axios.patch(` https://68c5-158-195-196-54.ngrok-free.app/users/${userId}`, {
         coins: newCoins,
         battle_attempts: newBattleAttempts,
       });
