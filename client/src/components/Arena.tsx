@@ -16,7 +16,7 @@ interface Enemy {
 
 // Функция расчёта характеристик персонажа по уровню
 const calculatePlayerStats = (level: number) => {
-  // Пример: уровень 1 – 10 HP и 3 урона, далее +3 HP и +2 урона за уровень
+  // Пример: уровень 1 – 10 HP и 3 урона, затем +3 HP и +2 урона за каждый последующий уровень
   const maxHp = 10 + (level - 1) * 3;
   const damage = 3 + (level - 1) * 2;
   return { maxHp, damage };
@@ -25,15 +25,15 @@ const calculatePlayerStats = (level: number) => {
 // Функция создания врагов для текущей волны
 const spawnEnemies = (wave: number): Enemy[] => {
   if (wave <= 5) {
-    const enemyLevel = wave; // Волна 1 — враги 1 уровня, и т.д.
+    const enemyLevel = wave; // Волна 1 — враги 1 уровня, волна 2 — враги 2 уровня и т.д.
     const count = wave;
     const enemies: Enemy[] = [];
     for (let i = 0; i < count; i++) {
       enemies.push({
         id: i,
         level: enemyLevel,
-        hp: enemyLevel * 6,       // Например, 1 уровень: 6 HP, 2 уровень: 12 HP и т.д.
-        damage: enemyLevel * 2,     // Например, 1 уровень: 2 урона, 2 уровень: 4 урона
+        hp: enemyLevel * 6,       // Пример: враг 1 уровня – 6 HP, 2 уровня – 12 HP и т.д.
+        damage: enemyLevel * 2,     // Пример: враг 1 уровня – 2 урона, 2 уровня – 4 урона и т.д.
         goldReward: enemyLevel * 10,// Золото за убийство врага
       });
     }
@@ -43,21 +43,23 @@ const spawnEnemies = (wave: number): Enemy[] => {
     return [{
       id: 0,
       level: 1,
-      hp: 60,   // Увеличенное здоровье
-      damage: 15, // Повышенный урон
+      hp: 60,       // Увеличенное здоровье
+      damage: 15,   // Повышенный урон
       goldReward: 150, // Больше золота за убийство босса
       isBoss: true,
     }];
   }
 };
 
-const ARENA_INTERVAL = 1000;         // Интервал раунда боя в мс
-const COOLDOWN_TIME = 30 * 60 * 1000;  // 30 минут в мс
-const MAX_ATTEMPTS = 5;
+const ARENA_INTERVAL = 1000; // Интервал раунда боя в мс
 
 const Arena: React.FC = () => {
-  // Расширили UserContext, добавив coins для текущего баланса
-  const { userId, level, refreshUserData, coins } = useUserContext();
+  // Предполагается, что UserContext теперь возвращает следующие поля:
+  // - coins – текущий баланс монет
+  // - battle_attempts – доступное число боёв (например, от 0 до 5)
+  // - nextBattleRegen – время (в мс), оставшееся до восстановления следующей попытки
+  // refreshUserData – функция для обновления данных пользователя (например, делается GET-запрос к /users/{user_id})
+  const { userId, level, refreshUserData, coins, battle_attempts, nextBattleRegen } = useUserContext();
 
   // Состояния персонажа и боя
   const [playerHp, setPlayerHp] = useState<number>(0);
@@ -69,33 +71,7 @@ const Arena: React.FC = () => {
   const [battleRunning, setBattleRunning] = useState<boolean>(false);
   const [gameOver, setGameOver] = useState<boolean>(false);
 
-  // Ограничение по числу боёв
-  const [attempts, setAttempts] = useState<number>(MAX_ATTEMPTS);
-  // Массив cooldown’ов для сохранения времени восстановления использованных попыток
-  const [cooldowns, setCooldowns] = useState<number[]>([]);
-  // Обратный отсчёт до восстановления следующей попытки (в мс)
-  const [regenCountdown, setRegenCountdown] = useState<number>(0);
-
   const intervalRef = useRef<number | null>(null);
-  const cooldownIntervalRef = useRef<number | null>(null);
-
-  // При монтировании компонента считываем попытки и cooldown'ы из localStorage
-  useEffect(() => {
-    const savedAttempts = localStorage.getItem("attempts");
-    const savedCooldowns = localStorage.getItem("cooldowns");
-    if (savedAttempts) {
-      setAttempts(JSON.parse(savedAttempts));
-    }
-    if (savedCooldowns) {
-      setCooldowns(JSON.parse(savedCooldowns));
-    }
-  }, []);
-
-  // Сохраняем попытки и cooldown'ы в localStorage при их изменении
-  useEffect(() => {
-    localStorage.setItem("attempts", JSON.stringify(attempts));
-    localStorage.setItem("cooldowns", JSON.stringify(cooldowns));
-  }, [attempts, cooldowns]);
 
   // Инициализация характеристик персонажа при загрузке и при изменении уровня
   useEffect(() => {
@@ -105,11 +81,10 @@ const Arena: React.FC = () => {
     setPlayerDamage(damage);
   }, [level]);
 
-  // Функция старта боя – проверяет, есть ли попытки
+  // Запуск боя (если у пользователя есть попытки)
   const startBattle = () => {
-    if (attempts <= 0) return; // Если попыток нет, запуск недоступен
+    if (battle_attempts <= 0) return; // Если попыток нет, запуск невозможен
 
-    // Если игра завершена, сбрасываем состояние
     if (gameOver) {
       resetBattle();
     }
@@ -135,7 +110,6 @@ const Arena: React.FC = () => {
   const battleRound = () => {
     if (!battleRunning) return;
     if (enemies.length === 0) {
-      // Если все враги побеждены, переходим к следующей волне
       setWave(prev => prev + 1);
       setEnemies(spawnEnemies(wave + 1));
       return;
@@ -146,48 +120,46 @@ const Arena: React.FC = () => {
     let enemy = currentEnemies[0];
     enemy.hp -= playerDamage;
     if (enemy.hp <= 0) {
-      // Если враг побеждён, начисляем золото и удаляем его из списка
+      // Враг побеждён — начисляем золото и удаляем его
       setGoldCollected(prev => prev + enemy.goldReward);
       currentEnemies.shift();
     } else {
       currentEnemies[0] = enemy;
     }
 
-    // Остальные враги наносят урон персонажу
+    // Оставшиеся враги атакуют персонажа
     const totalEnemyDamage = currentEnemies.reduce((acc, en) => acc + en.damage, 0);
     const newPlayerHp = playerHp - totalEnemyDamage;
     setPlayerHp(newPlayerHp);
-
     setEnemies(currentEnemies);
 
-    // Если HP персонажа упали до 0 или ниже, завершаем бой
+    // Если HP персонажа опускается до 0 или ниже, бой завершается
     if (newPlayerHp <= 0) {
       setBattleRunning(false);
       setGameOver(true);
-      if (attempts > 0) {
-        // Расходуем попытку и добавляем время восстановления для неё
-        setAttempts(prev => prev - 1);
-        setCooldowns(prev => [...prev, Date.now() + COOLDOWN_TIME]);
-      }
-      transferGold();
+      updateBattleStats();
     }
   };
 
-  // Функция передачи золота на сервер: прибавляем добытое золото к текущему балансу
-  const transferGold = async () => {
+  // Обновление данных боя на сервере:
+  // При смерти персонажа добытое золото прибавляется к балансу, а число попыток уменьшается на 1.
+  const updateBattleStats = async () => {
     if (!userId) return;
     try {
       const newCoins = coins + goldCollected;
-      await axios.patch(`https://68c5-158-195-196-54.ngrok-free.app/users/${userId}`, {
+      // Предполагается, что battle_attempts хранится в базе данных, и мы списываем одну попытку
+      const newBattleAttempts = battle_attempts - 1;
+      await axios.patch(`https://your-backend-url.com/users/${userId}`, {
         coins: newCoins,
+        battle_attempts: newBattleAttempts,
       });
-      refreshUserData();
+      refreshUserData(); // Обновляем данные пользователя после PATCH-запроса
     } catch (error) {
-      console.error("Ошибка передачи золота на сервер:", error);
+      console.error("Ошибка обновления данных боя на сервере:", error);
     }
   };
 
-  // Интервал для раундов боя
+  // Интервал для симуляции раундов боя
   useEffect(() => {
     if (battleRunning && !gameOver) {
       intervalRef.current = window.setInterval(() => {
@@ -199,28 +171,15 @@ const Arena: React.FC = () => {
     };
   }, [battleRunning, playerHp, enemies]);
 
-  // Интервал для обработки cooldown’ов и восстановления попыток
+  // Периодическое обновление данных пользователя (например, каждую минуту)
   useEffect(() => {
-    cooldownIntervalRef.current = window.setInterval(() => {
-      if (cooldowns.length > 0) {
-        const nextCooldown = Math.min(...cooldowns);
-        const remaining = nextCooldown - Date.now();
-        setRegenCountdown(remaining > 0 ? remaining : 0);
-        if (remaining <= 0) {
-          setCooldowns(prev => prev.filter(time => time > Date.now()));
-          setAttempts(prev => Math.min(prev + 1, MAX_ATTEMPTS));
-        }
-      } else {
-        setRegenCountdown(0);
-      }
-    }, 1000);
+    const refreshInterval = window.setInterval(() => {
+      refreshUserData();
+    }, 60000); // Обновление каждые 60 секунд
+    return () => clearInterval(refreshInterval);
+  }, [refreshUserData]);
 
-    return () => {
-      if (cooldownIntervalRef.current) clearInterval(cooldownIntervalRef.current);
-    };
-  }, [cooldowns]);
-
-  // Функция для форматирования оставшегося времени в формате mm:ss
+  // Функция для форматирования оставшегося времени (mm:ss)
   const formatTime = (ms: number) => {
     const totalSec = Math.ceil(ms / 1000);
     const minutes = Math.floor(totalSec / 60);
@@ -237,28 +196,35 @@ const Arena: React.FC = () => {
       <div className="character" style={{ width: "30%", border: "1px solid white", padding: "10px" }}>
         <h2>Персонаж</h2>
         <p>Уровень: {level}</p>
-        <p>HP: {playerHp} / {playerMaxHp}</p>
+        <p>
+          HP: {playerHp} / {playerMaxHp}
+        </p>
         <p>Урон: {playerDamage}</p>
         <p>Золото (не сохранено): {goldCollected}</p>
-        <p>Попытки: {attempts} из {MAX_ATTEMPTS}</p>
-        {attempts < MAX_ATTEMPTS && regenCountdown > 0 && (
-          <p>Следующая попытка через: {formatTime(regenCountdown)}</p>
+        <p>Попытки: {battle_attempts} из 5</p>
+        {battle_attempts < 5 && nextBattleRegen > 0 && (
+          <p>Следующая попытка через: {formatTime(nextBattleRegen)}</p>
         )}
         {gameOver && <p style={{ color: "red" }}>Вы погибли!</p>}
       </div>
 
       {/* Центральная часть: Арена */}
-      <div className="arena" style={{ width: "40%", border: "1px solid white", padding: "10px", textAlign: "center" }}>
+      <div
+        className="arena"
+        style={{ width: "40%", border: "1px solid white", padding: "10px", textAlign: "center" }}
+      >
         <h2>Арена</h2>
         <p>Волна: {wave <= 5 ? wave : "Босс"}</p>
         {battleRunning ? (
           <p>Бой идет...</p>
         ) : (
-          <button onClick={startBattle} disabled={attempts <= 0}>
+          <button onClick={startBattle} disabled={battle_attempts <= 0}>
             {gameOver ? "Начать заново" : "Начать бой"}
           </button>
         )}
-        {attempts <= 0 && <p style={{ color: "red" }}>Нет попыток. Ждите восстановления.</p>}
+        {battle_attempts <= 0 && (
+          <p style={{ color: "red" }}>Нет попыток. Ждите восстановления.</p>
+        )}
       </div>
 
       {/* Правая часть: Противники */}
