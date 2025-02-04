@@ -32,6 +32,8 @@ class UserResponse(BaseModel):
     coins: int
     gems: int
     level: int
+    battle_attempts: int  # новое поле
+    last_battle_update: datetime | None = None 
     
 
     class Config:
