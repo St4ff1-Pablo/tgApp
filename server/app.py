@@ -51,6 +51,8 @@ class UserUpdate(BaseModel):
     coins: int | None = None
     gems: int | None = None
     level: int | None = None
+    battle_attempts: int | None = None
+    last_battle_update: datetime | None = None
 
 async def get_session() -> AsyncSession:
     async with async_session() as session:
@@ -87,7 +89,7 @@ async def get_referrals(user_id: int, session: AsyncSession = Depends(get_sessio
     return [ReferralResponse.model_validate(ref) for ref in referrals] if referrals else []  # Return empty list instead of 404
 
 
-@app.patch("/users/{user_id}")
+@app.patch("/users/{user_id}", response_model=UserResponse)
 async def update_user(
     user_id: int, 
     update_data: UserUpdate,
@@ -95,24 +97,27 @@ async def update_user(
 ):
     result = await session.execute(select(User).filter(User.id == user_id))
     user = result.scalars().first()
-    
+
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Допустим, здесь update_data содержит поле "battle_attempts_delta" (например, -1 при окончании боя)
     data = update_data.dict(exclude_unset=True)
-    if "battle_attempts_delta" in data:
-        user.battle_attempts = max(user.battle_attempts + data["battle_attempts_delta"], 0)
-        # Можно также обновить last_battle_update, если это требуется логикой
-        if data["battle_attempts_delta"] < 0:
+    # Если обновляется количество попыток, обновляем и время последнего обновления
+    if "battle_attempts" in data:
+        # При уменьшении попыток обновляем время
+        if data["battle_attempts"] < user.battle_attempts:
+            from datetime import datetime
             user.last_battle_update = datetime.utcnow()
+        user.battle_attempts = data["battle_attempts"]
     
-    # Safely update only provided fields
-    for field, value in update_data.dict(exclude_unset=True).items():
-        setattr(user, field, value if value is not None else getattr(user, field))  # Avoid overwriting with None
+    # Обновляем остальные поля, если они переданы
+    for field, value in data.items():
+        if field not in ("battle_attempts",):
+            setattr(user, field, value)
     
     await session.commit()
     return UserResponse.model_validate(user)
+
 
 
 
