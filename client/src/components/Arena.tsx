@@ -24,32 +24,36 @@ const calculatePlayerStats = (level: number) => {
 
 // Функция создания врагов для текущей волны
 const spawnEnemies = (wave: number): Enemy[] => {
-  if (wave <= 5) {
-    const enemyLevel = wave; // Волна 1 — враги 1 уровня, волна 2 — враги 2 уровня и т.д.
-    const count = wave;
+  // Если номер волны делится на 5 без остатка, это босс-волна
+  if (wave % 5 === 0) {
+    return [
+      {
+        id: 0,
+        level: wave, // уровень босса равен номеру волны (например, 5, 10, 15, ...)
+        hp: wave * 12, // усиленные характеристики босса
+        damage: wave * 3,
+        goldReward: wave * 50,
+        isBoss: true,
+      },
+    ];
+  } else {
+    // Для обычных волн количество врагов равно остатку от деления (1, 2, 3 или 4)
+    const count = wave % 5;
+    const enemyLevel = wave; // уровень врагов равен номеру волны
     const enemies: Enemy[] = [];
     for (let i = 0; i < count; i++) {
       enemies.push({
         id: i,
         level: enemyLevel,
-        hp: enemyLevel * 6,       // Пример: враг 1 уровня – 6 HP, 2 уровня – 12 HP и т.д.
-        damage: enemyLevel * 2,     // Пример: враг 1 уровня – 2 урона, 2 уровня – 4 урона и т.д.
-        goldReward: enemyLevel * 10,// Золото за убийство врага
+        hp: enemyLevel * 6,     // обычные характеристики врагов
+        damage: enemyLevel * 2,
+        goldReward: enemyLevel * 10,
       });
     }
     return enemies;
-  } else {
-    // После 5-й волны появляется босс: один враг с усиленными характеристиками
-    return [{
-      id: 0,
-      level: 1,
-      hp: 60,       // Увеличенное здоровье
-      damage: 15,   // Повышенный урон
-      goldReward: 150, // Больше золота за убийство босса
-      isBoss: true,
-    }];
   }
 };
+
 
 const ARENA_INTERVAL = 1000; // Интервал раунда боя в мс
 
