@@ -178,7 +178,7 @@ const Arena: React.FC = () => {
     if (!userId) return;
     try {
       const newCoins = coins + goldCollected;
-      await axios.patch(`https://your-backend-url.com/users/${userId}`, {
+      await axios.patch(`https://68c5-158-195-196-54.ngrok-free.app/users/${userId}`, {
         coins: newCoins,
       });
       refreshUserData();
