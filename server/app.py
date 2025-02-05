@@ -125,24 +125,31 @@ async def update_user(
 
 @app.get("/users/{user_id}/missions")
 async def get_user_missions(user_id: int, session: AsyncSession = Depends(get_session)):
-    """ Retrieves missions for a specific user. """
-    result = await session.execute(
-        select(
-            Mission.id, Mission.name, Mission.description, Mission.reward_coins, Mission.reward_gems, UserMission.completed
-        )
-        .join(UserMission, Mission.id == UserMission.mission_id)
-        .where(UserMission.user_id == user_id)
+    # Получаем все миссии
+    missions_result = await session.execute(select(Mission))
+    all_missions = missions_result.scalars().all()
+
+    # Получаем миссии пользователя
+    user_missions_result = await session.execute(
+        select(UserMission).where(UserMission.user_id == user_id)
     )
+    user_missions = {um.mission_id: um.completed for um in user_missions_result.scalars().all()}
 
-    missions = result.all()
+    # Формируем ответ, добавляя информацию о выполнении миссии, если запись существует
+    missions_list = []
+    for mission in all_missions:
+        missions_list.append({
+            "id": mission.id,
+            "name": mission.name,
+            "reward_coins": mission.reward_coins,
+            "reward_gems": mission.reward_gems,
+            "completed": user_missions.get(mission.id, False),
+            "type": mission.type,
+            "target_value": mission.target_value,
+            "description": mission.description,
+        })
+    return missions_list
 
-    if not missions:
-        return {"message": "No missions found for this user."}  # Return friendly message
-
-    return [
-        {"id": m.id, "name": m.name, "description": m.description, "reward_coins": m.reward_coins, "reward_gems": m.reward_gems, "completed": m.completed}
-        for m in missions
-    ]
 
 
 
