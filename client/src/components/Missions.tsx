@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MissionCard from "./MissionCard";
 import { useUserContext } from "./UserContext";
-import "./styles/Mission.css"
+import "./styles/Mission.css";
 
 interface Mission {
     id: number;
@@ -10,6 +10,9 @@ interface Mission {
     reward_coins: number;
     reward_gems: number;
     completed: boolean;
+    type: string;
+    target_value: string;
+    description?: string;
 }
 
 const Missions: React.FC = () => {
@@ -19,7 +22,7 @@ const Missions: React.FC = () => {
     const fetchMissions = async () => {
         try {
             const response = await axios.get<Mission[]>(
-                `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/missions`, 
+                `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/missions`,
                 {
                     headers: {
                         "ngrok-skip-browser-warning": "true",
@@ -27,7 +30,6 @@ const Missions: React.FC = () => {
                     },
                 }
             );
-
             setMissions(response.data);
         } catch (error) {
             console.error("Error fetching missions:", error);
@@ -52,9 +54,12 @@ const Missions: React.FC = () => {
                             key={mission.id}
                             id={mission.id}
                             name={mission.name}
-                            reward_coins={mission.reward_coins} 
-                            reward_gems={mission.reward_gems}  
-                            completed={mission.completed} 
+                            reward_coins={mission.reward_coins}
+                            reward_gems={mission.reward_gems}
+                            completed={mission.completed}
+                            type={mission.type}
+                            target_value={mission.target_value}
+                            description={mission.description}
                         />
                     ))
                 ) : (
