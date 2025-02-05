@@ -37,8 +37,6 @@ const MissionCard: React.FC<MissionProps> = ({
             {description && <p>{description}</p>}
             <p>Coins Reward: {reward_coins}</p>
             <p>Gems Reward: {reward_gems}</p>
-            <p>Type: {type}</p>
-            <p>Target: {target_value}</p>
             <button onClick={handleComplete} disabled={completed}>
                 {completed ? "Completed" : "Complete Mission"}
             </button>
