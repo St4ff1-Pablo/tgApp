@@ -48,5 +48,7 @@ class Mission(Base):
     id = mapped_column(BigInteger, primary_key=True)
     name = mapped_column(String, unique=True, nullable=False)
     description = mapped_column(String, nullable=False)
+    type = mapped_column(String, nullable=False)  # "subscribe", "level", "boss", "referral"
+    target_value = mapped_column(String, nullable=False)  # можно хранить как строку; для чисел использовать преобразование
     reward_coins = mapped_column(Integer, default=0) 
     reward_gems = mapped_column(Integer, default=0)

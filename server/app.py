@@ -7,6 +7,7 @@ from typing import List
 from sqlalchemy.sql import func
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from main import bot
 
 from referrals.db.models import User, Referral, Mission, UserMission
 from referrals.bot.middlewares.db_session import DBSessionMiddleware
@@ -147,35 +148,74 @@ async def get_user_missions(user_id: int, session: AsyncSession = Depends(get_se
 
 @app.post("/users/{user_id}/missions/{mission_id}/complete")
 async def complete_mission(user_id: int, mission_id: int, session: AsyncSession = Depends(get_session)):
-    """ Mark mission as completed and give rewards to user. """
+    """
+    Завершает миссию, проводит проверку в зависимости от типа и начисляет награды.
+    """
+    # Получаем пользователя и миссию
     user = await session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
+    
     mission = await session.get(Mission, mission_id)
     if not mission:
         raise HTTPException(status_code=404, detail="Mission not found")
-
-    # Check if the mission is already completed
-    existing_mission = await session.execute(
-        select(UserMission)
-        .where(UserMission.user_id == user_id, UserMission.mission_id == mission_id)
+    
+    # Проверка, если миссия уже выполнена
+    existing_mission_result = await session.execute(
+        select(UserMission).where(UserMission.user_id == user_id, UserMission.mission_id == mission_id)
     )
-    user_mission = existing_mission.scalars().first()
-
-    if user_mission:
-        if user_mission.completed:
-            raise HTTPException(status_code=400, detail="Mission already completed")
+    user_mission = existing_mission_result.scalars().first()
+    if user_mission and user_mission.completed:
+        raise HTTPException(status_code=400, detail="Mission already completed")
+    
+    # Проверка выполнения миссии в зависимости от её типа
+    if mission.type == "subscribe":
+        # Здесь target_value содержит идентификатор канала, на который нужно подписаться
+        channel_id = mission.target_value
+        chat_member = await bot.get_chat_member(channel_id, user_id)
+        if chat_member.status not in ["member", "creator", "administrator"]:
+            raise HTTPException(status_code=400, detail="User is not subscribed to the Telegram channel.")
+    
+    elif mission.type == "level":
+        required_level = int(mission.target_value)
+        if user.level < required_level:
+            raise HTTPException(status_code=400, detail=f"User level ({user.level}) is below required level {required_level}.")
+    
+    elif mission.type == "boss":
+        required_boss_level = int(mission.target_value)
+        # Реализуйте свою проверку: например, через отдельную таблицу с данными о боях или статистику побед над боссами.
+        if not user_has_defeated_boss(user_id, required_boss_level):
+            raise HTTPException(status_code=400, detail=f"User has not defeated a boss of level {required_boss_level}.")
+    
+    elif mission.type == "referral":
+        required_referrals = int(mission.target_value)
+        # Подсчёт количества приглашённых друзей
+        referral_result = await session.execute(select(Referral).where(Referral.user_id == user_id))
+        referral_count = len(referral_result.scalars().all())
+        if referral_count < required_referrals:
+            raise HTTPException(status_code=400, detail=f"User has invited {referral_count} friends; {required_referrals} required.")
+    
+    # Отмечаем миссию как выполненную
+    if not user_mission:
+        user_mission = UserMission(
+            user_id=user.id,
+            mission_id=mission.id,
+            completed=True,
+            completed_at=datetime.utcnow()
+        )
+        session.add(user_mission)
+    else:
         user_mission.completed = True
         user_mission.completed_at = datetime.utcnow()
-    else:
-        session.add(UserMission(user_id=user.id, mission_id=mission.id, completed=True, completed_at=datetime.utcnow()))
-
-    # Update user's rewards
+    
+    # Начисляем награды
     user.coins += mission.reward_coins
     user.gems += mission.reward_gems
 
     await session.commit()
-
-    return {"message": "Mission completed!", "coins_earned": mission.reward_coins, "gems_earned": mission.reward_gems}
+    return {
+        "message": "Mission completed!",
+        "coins_earned": mission.reward_coins,
+        "gems_earned": mission.reward_gems
+    }
 
