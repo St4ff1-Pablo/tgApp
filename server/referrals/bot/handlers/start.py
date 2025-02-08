@@ -116,6 +116,7 @@ async def start(message: Message, command: CommandObject, session: AsyncSession)
 
                 # Add the new referral
                 session.add(Referral(user_id=inviter.id, referral_id=user.id))
+                inviter.coins += 2000
                 await session.commit()
 
                 await message.bot.send_message(
