@@ -1,5 +1,5 @@
 // MissionCard.tsx
-import React from "react";
+import React, { useState } from "react";
 import { useUserContext } from "./UserContext";
 import "./styles/Mission.css";
 
@@ -9,8 +9,8 @@ interface MissionProps {
     reward_coins: number;
     reward_gems: number;
     completed: boolean;
-    type: string;          // новый параметр: тип миссии ("subscribe", "level", "boss", "referral" и т.д.)
-    target_value: string;  // новый параметр: для подписки – URL канала, для остальных миссий – целевое значение
+    type: string;
+    target_value: string;
     description?: string;
 }
 
@@ -25,17 +25,33 @@ const MissionCard: React.FC<MissionProps> = ({
     description,
 }) => {
     const { completeMission } = useUserContext();
+    // Флаг, чтобы отследить, что пользователь уже нажал "Go to Channel"
+    const [visited, setVisited] = useState(false);
 
     const handleClick = () => {
         if (type === "subscribe") {
-            // Если миссия подписки – перенаправляем пользователя на канал
-            window.open(target_value, "_blank");
+            // Если пользователь еще не перешел на канал, открываем канал и помечаем, что он посетил
+            if (!visited) {
+                window.open(target_value, "_blank");
+                setVisited(true);
+            } else {
+                // Если уже посетил, то проверяем выполнение миссии на сервере
+                completeMission(id);
+            }
         } else {
-            // Для остальных типов миссий запускаем завершение миссии
             if (!completed) {
                 completeMission(id);
             }
         }
+    };
+
+    // Определяем надпись на кнопке в зависимости от типа миссии и флага visited
+    const getButtonLabel = () => {
+        if (completed) return "Completed";
+        if (type === "subscribe") {
+            return visited ? "Check" : "Go to Channel";
+        }
+        return "Complete Mission";
     };
 
     return (
@@ -45,14 +61,11 @@ const MissionCard: React.FC<MissionProps> = ({
             <p>Coins Reward: {reward_coins}</p>
             <p>Gems Reward: {reward_gems}</p>
             <button onClick={handleClick} disabled={completed}>
-                {completed 
-                    ? "Completed" 
-                    : type === "subscribe" 
-                        ? "Go to Channel" 
-                        : "Complete Mission"}
+                {getButtonLabel()}
             </button>
         </div>
     );
 };
 
 export default MissionCard;
+
