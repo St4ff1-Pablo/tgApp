@@ -1,3 +1,4 @@
+// MissionCard.tsx
 import React from "react";
 import { useUserContext } from "./UserContext";
 import "./styles/Mission.css";
@@ -8,8 +9,8 @@ interface MissionProps {
     reward_coins: number;
     reward_gems: number;
     completed: boolean;
-    type: string;
-    target_value: string;
+    type: string;          // новый параметр: тип миссии ("subscribe", "level", "boss", "referral" и т.д.)
+    target_value: string;  // новый параметр: для подписки – URL канала, для остальных миссий – целевое значение
     description?: string;
 }
 
@@ -25,9 +26,15 @@ const MissionCard: React.FC<MissionProps> = ({
 }) => {
     const { completeMission } = useUserContext();
 
-    const handleComplete = () => {
-        if (!completed) {
-            completeMission(id);
+    const handleClick = () => {
+        if (type === "subscribe") {
+            // Если миссия подписки – перенаправляем пользователя на канал
+            window.open(target_value, "_blank");
+        } else {
+            // Для остальных типов миссий запускаем завершение миссии
+            if (!completed) {
+                completeMission(id);
+            }
         }
     };
 
@@ -37,8 +44,12 @@ const MissionCard: React.FC<MissionProps> = ({
             {description && <p>{description}</p>}
             <p>Coins Reward: {reward_coins}</p>
             <p>Gems Reward: {reward_gems}</p>
-            <button onClick={handleComplete} disabled={completed}>
-                {completed ? "Completed" : "Complete Mission"}
+            <button onClick={handleClick} disabled={completed}>
+                {completed 
+                    ? "Completed" 
+                    : type === "subscribe" 
+                        ? "Go to Channel" 
+                        : "Complete Mission"}
             </button>
         </div>
     );
