@@ -177,9 +177,12 @@ async def complete_mission(user_id: int, mission_id: int, session: AsyncSession 
     
     # Проверка выполнения миссии в зависимости от её типа
     if mission.type == "subscribe":
-        # Здесь target_value содержит идентификатор канала, на который нужно подписаться
-        channel_id = mission.target_value
-        chat_member = await bot.get_chat_member(channel_id, user_id)
+    # Если target_value выглядит как URL, извлекаем имя канала
+        channel_identifier = mission.target_value
+        if channel_identifier.startswith("http"):
+        # Пример простого преобразования, предполагается, что URL имеет формат https://t.me/your_channel
+            channel_identifier = "@" + channel_identifier.split("t.me/")[-1]
+        chat_member = await bot.get_chat_member(channel_identifier, user_id)
         if chat_member.status not in ["member", "creator", "administrator"]:
             raise HTTPException(status_code=400, detail="User is not subscribed to the Telegram channel.")
     
@@ -190,8 +193,8 @@ async def complete_mission(user_id: int, mission_id: int, session: AsyncSession 
     
     elif mission.type == "boss":
         required_boss_level = int(mission.target_value)
-        # Реализуйте свою проверку: например, через отдельную таблицу с данными о боях или статистику побед над боссами.
-        if not user_has_defeated_boss(user_id, required_boss_level):
+        # Если у пользователя уже побеждён босс с уровнем, равным или выше требуемого, миссия засчитывается
+        if user.last_boss_defeated < required_boss_level:
             raise HTTPException(status_code=400, detail=f"User has not defeated a boss of level {required_boss_level}.")
     
     elif mission.type == "referral":
