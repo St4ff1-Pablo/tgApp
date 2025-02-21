@@ -89,7 +89,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             const response = await axios.post<MissionCompleteResponse>(
-                `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/missions/${missionId}/complete`,
+                `https://634b-185-94-55-134.ngrok-free.app/users/${userId}/missions/${missionId}/complete`,
                 {},
                 {
                     headers: {

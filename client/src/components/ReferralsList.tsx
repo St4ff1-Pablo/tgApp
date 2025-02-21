@@ -19,7 +19,7 @@ const ReferralsList: React.FC = () => {
         if (!userId) return;
     
         axios
-            .get(`https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/referrals`,{headers:{
+            .get(`https://634b-185-94-55-134.ngrok-free.app/users/${userId}/referrals`,{headers:{
                 "ngrok-skip-browser-warning":true,
             }})
             .then((response) => {

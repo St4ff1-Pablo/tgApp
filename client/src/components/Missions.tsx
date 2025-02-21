@@ -22,7 +22,7 @@ const Missions: React.FC = () => {
     const fetchMissions = async () => {
         try {
             const response = await axios.get<Mission[]>(
-                `https://68c5-158-195-196-54.ngrok-free.app/users/${userId}/missions`,
+                `https://634b-185-94-55-134.ngrok-free.app/users/${userId}/missions`,
                 {
                     headers: {
                         "ngrok-skip-browser-warning": "true",
